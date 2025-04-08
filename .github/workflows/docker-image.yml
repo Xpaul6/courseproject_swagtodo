@@ -33,7 +33,7 @@ jobs:
           context: ./backend
           file: ./backend/backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/swag-todo-backend:${{ steps.date.outputs.date }}
+          tags: ghcr.io/${{ github.repository_owner | lower }}/swag-todo-backend:${{ steps.date.outputs.date }}
       
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
@@ -41,7 +41,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/swag-todo-frontend:${{ steps.date.outputs.date }}
+          tags: ghcr.io/${{ github.repository_owner | lower }}/swag-todo-frontend:${{ steps.date.outputs.date }}
 
   deploy:
     runs-on: ubuntu-latest
