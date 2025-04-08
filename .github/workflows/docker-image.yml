@@ -1,66 +1,75 @@
-name: Docker Image CI
+name: Docker Image CI/CD
 
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-push-image:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      date: ${{ steps.date.outputs.date }}
-
+    
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
       
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +%s)" >> $GITHUB_OUTPUT
+    - name: Build backend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./backend
+        file: ./backend/backend/Dockerfile
+        push: false
+        tags: swag-todo-backend:latest
+        load: true
+        
+    - name: Build frontend
+      uses: docker/build-push-action@v4
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: false
+        tags: swag-todo-frontend:latest
+        load: true
+        
+    - name: Create network
+      run: docker network create swag-todo-network
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    - name: Run database
+      run: |
+        docker run -d \
+          --name swag-todo-db \
+          --network swag-todo-network \
+          -e POSTGRES_USER=postgres \
+          -e POSTGRES_PASSWORD=postgres \
+          -e POSTGRES_DB=swag_todo \
+          postgres:16-alpine
+          
+    - name: Run backend
+      run: |
+        docker run -d \
+          --name swag-todo-backend \
+          --network swag-todo-network \
+          -e ASPNETCORE_ENVIRONMENT=Development \
+          -e ASPNETCORE_URLS=http://+:8080 \
+          -p 8080:8080 \
+          swag-todo-backend:latest
+          
+    - name: Run frontend
+      run: |
+        docker run -d \
+          --name swag-todo-frontend \
+          --network swag-todo-network \
+          -p 80:80 \
+          swag-todo-frontend:latest
+          
+    - name: Wait for services to start
+      run: sleep 15
       
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build and push backend image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./backend
-          file: ./backend/backend/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner | lower }}/swag-todo-backend:${{ steps.date.outputs.date }}
-      
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner | lower }}/swag-todo-frontend:${{ steps.date.outputs.date }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-push-image
-
-    steps:
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add remote server to known_hosts
-        run: |
-          ssh-keyscan user@remote_server >> ~/.ssh/known_hosts    # Replace user@remote_server
-
-      - name: Deploy to server
-        run: |
-          ssh user@remote_server << 'EOF'                         # Replace user@remote_server
-            cd <REPLACE_ME_WITH_DOCKER_COMPOSE_FOLDER>            # Replace with your Docker Compose folder
-            sed -i 's/^DOCKER_TAG=.*/DOCKER_TAG=${{ needs.build-push-image.outputs.date }}/' .env
-            docker compose up -d
-          EOF
+    - name: Check if services are running
+      run: |
+        docker ps
+        curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/hello || true
+        curl -s -o /dev/null -w "%{http_code}" http://localhost:80 || true
