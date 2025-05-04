@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './styles/App.css'
+import '../styles/App.css'
 
 function App() {
   const [apiText, setApiText] = useState('defaultText');
