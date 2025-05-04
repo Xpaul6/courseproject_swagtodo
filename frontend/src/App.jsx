@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import './styles/App.css'
 
 function App() {
-  const [apiText, setApiText] = useState('');
+  const [apiText, setApiText] = useState('defaultText');
 
-  async function getApiText() {
-    await fetch('/api/hello')
-      .then((res) => res.json())
-      .then((data) => {setApiText(data.message)})
-      .catch((err) => 'Error: ' + err.message)
-  }
+  // async function getApiText() {
+  //   await fetch('/api/hello')
+  //     .then((res) => res.json())
+  //     .then((data) => {setApiText(data.message)})
+  //     .catch((err) => 'Error: ' + err.message)
+  // }
 
-  useEffect(getApiText, [])
+  // useEffect(getApiText, [])
 
   return (
     <>
