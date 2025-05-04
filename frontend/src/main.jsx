@@ -5,12 +5,13 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './styles/main.css'
 
 import App from './components/App.jsx'
+import Error from './components/Error.jsx'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    error: <div>404 not found</div>
+    errorElement: <Error />, 
   },
 ])
 
