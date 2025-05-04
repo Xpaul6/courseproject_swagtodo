@@ -11,7 +11,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    errorElement: <Error />, 
+    errorElement: <Error type="incorrect page url"/>, 
   },
 ])
 
