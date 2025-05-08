@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col items-center w-full py-6 px-10 mt-50 sm:border-2 border-blue-400 rounded-xl">
+      <div className="pagebox">
         <h2>SWAG ToDo</h2>
         <p>{apiText}</p>
         <div className="flex flex-col items-center mt-4">
