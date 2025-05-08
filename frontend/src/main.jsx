@@ -13,6 +13,10 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <Error type="incorrect page url"/>, 
   },
+  {
+    path: '/register',
+    element: <Register />
+  }
 ])
 
 createRoot(document.getElementById('root')).render(

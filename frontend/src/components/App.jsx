@@ -21,7 +21,7 @@ function App() {
         <h2>SWAG ToDo</h2>
         <p>{apiText}</p>
         <div className="flex flex-col items-center mt-4">
-          <Link to="/a" className="link">
+          <Link to="/register" className="link">
             Регистрация
           </Link>
           <Link to="/a" className="link">
