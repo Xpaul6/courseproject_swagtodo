@@ -24,17 +24,26 @@ body {
   margin: 0;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@layer base {
+  h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+  }
+  
+  h2 {
+    font-size: 2.2em;
+    line-height: 1.1;
+  }
+  
+  h3 {
+    font-size: 1.5em;
+    line-height: 1.1;
+  }
 }
 
-h2 {
-  font-size: 2.2em;
-  line-height: 1.1;
-}
-
-h3 {
-  font-size: 1.5em;
-  line-height: 1.1;
+@layer components {
+  .link {
+    @apply text-xl text-blue-600 text-center w-full py-4 px-6 my-2 rounded-xl bg-gray-100 sm:bg-transparent
+      sm:hover:bg-gray-100 sm:hover:cursor-pointer sm:hover:underline transition ease-in-out duration-150
+  }
 }
