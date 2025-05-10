@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   backend:
     build:
@@ -5,6 +7,7 @@ services:
       dockerfile: backend/Dockerfile
     ports:
       - "8080:8080"
+      - "5001:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
@@ -26,6 +29,7 @@ services:
       - POSTGRES_DB=swag_todo
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "5432:5432"
 
