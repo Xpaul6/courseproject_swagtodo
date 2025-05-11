@@ -18,7 +18,7 @@ function Login() {
           />
           <button
             className="mt-5 p-2 bg-green-500 text-white sm:bg-transparent sm:text-black border-2 rounded-md
-              sm:border-green-500 transition-all ease-in-out transition-15 sm:hover:bg-green-500
+              sm:border-green-500 transition-all ease-in-out transition-150 sm:hover:bg-green-500
               hover:cursor-pointer sm:hover:text-white"
             onClick={(e) => {
               e.preventDefault();

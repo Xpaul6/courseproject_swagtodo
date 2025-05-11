@@ -30,6 +30,9 @@ function App() {
           <Link to="/login" className="link">
             Войти как ребенок
           </Link>
+          <Link to="/parent-menu" className='link text-red-500'>
+            Mеню родителя
+          </Link>
         </div>
       </div>
     </>

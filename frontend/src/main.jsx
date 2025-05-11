@@ -8,6 +8,7 @@ import App from './components/App.jsx'
 import Error from './components/Error.jsx'
 import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
+import Parent_menu from './components/Parent_menu.jsx'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/parent-menu',
+    element: <Parent_menu />
   }
 ])
 
