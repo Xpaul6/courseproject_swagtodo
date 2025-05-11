@@ -24,10 +24,10 @@ function App() {
           <Link to="/register" className="link">
             Регистрация
           </Link>
-          <Link to="/a" className="link">
+          <Link to="/login" className="link">
             Войти как родитель
           </Link>
-          <Link to="/a" className="link">
+          <Link to="/login" className="link">
             Войти как ребенок
           </Link>
         </div>
