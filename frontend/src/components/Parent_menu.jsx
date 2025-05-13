@@ -5,8 +5,8 @@ function Parent_menu() {
     <>
       <div className="p-5 w-full">
         <h2 className="text-center">Меню родителя</h2>
-        <div className="flex sm:flex-row flex-col mt-10 sm:h-[400px] sm:ml-6">
-          <div className="overflow-x-auto whitespace-nowrap">
+        <div className="flex sm:flex-row sm:justify-around flex-col mt-10 sm:h-[400px] sm:ml-6">
+          <div className="overflow-x-auto whitespace-nowrap sm:overflow:visible sm:whitespace-normal">
             <div
               className="flex flex-row sm:flex-col justify-evenly min-w-full border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
@@ -25,7 +25,7 @@ function Parent_menu() {
               </div>
             </div>
           </div>
-          <div className="mt-10 sm:mt-0 flex flex-col sm:ml-4 p-2 sm:w-2/5 border border-blue-400 rounded-md">
+          <div className="mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 sm:w-2/5 border-2 border-blue-400 rounded-md">
             <h3 className="text-center my-2 pb-2 border-b-1 border-blue-200">
               Список 1
             </h3>
@@ -39,8 +39,8 @@ function Parent_menu() {
               </button>
             </div>
           </div>
-          <div className="mt-10 sm:mt-0 flex flex-col p-2 sm:w-2/6 border border-blue-400 rounded-md sm:ml-auto sm:mr-6">
-            <h3 className="text-center my-2 pb-2 border-b-1 border-blue-200">
+          <div className="mt-10 sm:mt-0 flex flex-col p-2 sm:w-2/6 border-2 border-indigo-400 rounded-md sm:ml-15 sm:mr-6">
+            <h3 className="text-center my-2 pb-2 border-b-1 border-indigo-200">
               Статистика
             </h3>
             <div className="flex justify-evenly">
