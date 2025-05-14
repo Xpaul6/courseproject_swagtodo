@@ -28,7 +28,7 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.tasks (
-    id integer NOT NULL,
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     parent_id integer NOT NULL,
     child_id integer NOT NULL,
     description text NOT NULL,

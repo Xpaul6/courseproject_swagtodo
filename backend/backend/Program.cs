@@ -2,7 +2,7 @@ using backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-// Ñâàããåð
+// Ð¡Ð²Ð°Ð³Ð³ÐµÑ€
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -31,7 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
-// Ýíäïîèíò ðåãèñòðà
+// Ð­Ð½Ð´Ð¿Ð¾Ð¸Ð½Ñ‚ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°
 app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
 {
     var user = new User
@@ -45,7 +45,7 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
     db.Users.Add(user);
     await db.SaveChangesAsync();
 
-    return Results.Ok(new { Message = "Óñïåøíàÿ ðåãèñòðàöèÿ" });
+    return Results.Ok(new { Message = "Ð£ÑÐ¿ÐµÑˆÐ½Ð°Ñ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ñ" });
 })
 .WithOpenApi(operation => new(operation)
 {
@@ -57,15 +57,27 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
     }
 });
 
-// Ñîçäàíèå çàäàíèÿ
-app.MapPost("/tasks", async (TaskItem task, AppDbContext db) =>
+// Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ
+app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
 {
-    db.Tasks.Add(task);
+    var task = new TaskItem
+    {
+        ParentId = request.ParentId,
+        ChildId = request.ChildId,
+        Description = request.Description,
+        Deadline = request.Deadline,
+        Reward = request.Reward,
+        Status = request.Status ?? "ongoing" 
+    };
+    
+    await db.Tasks.AddAsync(task);
     await db.SaveChangesAsync();
+
     return Results.Created($"/tasks/{task.Id}", task);
 });
 
-// Ïîëó÷åíèå âñåõ çàäà÷ ðîäèòåëÿ
+
+// ÐŸÐ¾Ð»ÑƒÑ‡ÐµÐ½Ð¸Ðµ Ð²ÑÐµÑ… Ð·Ð°Ð´Ð°Ñ‡ Ñ€Ð¾Ð´Ð¸Ñ‚ÐµÐ»Ñ
 app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
 {
     var tasks = await db.Tasks
@@ -74,7 +86,7 @@ app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
     return Results.Ok(tasks);
 });
 
-// Ðåäàêòèðîâàíèå çàäàíèÿ
+// Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ
 app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) =>
 {
     var task = await db.Tasks.FindAsync(id);
@@ -89,7 +101,7 @@ app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) 
     return Results.Ok(task);
 });
 
-// Óäàëåíèå çàäàíèÿ
+// Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ
 app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
 {
     var task = await db.Tasks.FindAsync(id);
@@ -100,12 +112,12 @@ app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
     return Results.Ok();
 });
 
-// Ïîäòâåðæäåíèå âûïîëíåíèÿ çàäàíèÿ 
+// ÐŸÐ¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´ÐµÐ½Ð¸Ðµ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ Ð·Ð°Ð´Ð°Ð½Ð¸Ñ 
 app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
 {
     var task = await db.Tasks.FindAsync(id);
     if (task is null || task.Status != "pending")
-        return Results.BadRequest("Çàäà÷à íå íàéäåíà èëè ñòàòóñ íåêîððåêòåí.");
+        return Results.BadRequest("Ð—Ð°Ð´Ð°Ñ‡Ð° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð° Ð¸Ð»Ð¸ ÑÑ‚Ð°Ñ‚ÑƒÑ Ð½ÐµÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚ÐµÐ½.");
 
     task.Status = "completed"; 
     await db.SaveChangesAsync();
@@ -116,3 +128,11 @@ app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
 app.Run();
 
 public record RegisterRequest(string Name, string Email, string Password, bool IsParent);
+
+public record TaskCreateRequest(
+    int ParentId,
+    int ChildId,
+    string Description,
+    DateTime? Deadline,
+    string? Reward,
+    string? Status);
