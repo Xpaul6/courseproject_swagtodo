@@ -21,6 +21,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
+<<<<<<< HEAD
+
+// БД
+=======
+>>>>>>> a1a0559f7e46087aad19dafeba9d6c40810fadb2
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> a1a0559f7e46087aad19dafeba9d6c40810fadb2
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,27 +50,35 @@ if (app.Environment.IsDevelopment())
 // Эндпоинт регистра
 app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
 {
+    // Validate email uniqueness
+    if (await db.Users.AnyAsync(u => u.Email == request.Email))
+    {
+        return Results.Conflict("Email already exists");
+    }
+
     var user = new User
     {
         Name = request.Name,
         Email = request.Email,
         Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-        Role = request.IsParent ? "parent" : "child"
+        Role = request.IsParent ? "parent" : "child",
+        CreatedAt = DateTime.UtcNow.Date 
     };
 
     db.Users.Add(user);
     await db.SaveChangesAsync();
 
-    return Results.Ok(new { Message = "Успешная регистрация" });
+    return Results.Ok(new { 
+        Message = "Registration successful",
+        UserId = user.UserId,
+        Role = user.Role
+    });
 })
 .WithOpenApi(operation => new(operation)
 {
-    Summary = "Registration",
-    Description = "Register new person with role",
-    Tags = new List<OpenApiTag>
-    {
-        new OpenApiTag { Name = "Authentication" }
-    }
+    Summary = "Register a new user",
+    Description = "Creates a new user account with either parent or child role",
+    Tags = new List<OpenApiTag> { new() { Name = "Authentication" } }
 });
 
 // Создание задания
@@ -123,6 +147,7 @@ app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
     await db.SaveChangesAsync();
     return Results.Ok(task);
 });
+
 
 
 app.Run();

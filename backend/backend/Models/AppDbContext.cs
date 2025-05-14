@@ -16,28 +16,32 @@ namespace backend.Models
             modelBuilder.Entity<TaskItem>(entity =>
             {
                 entity.HasKey(e => e.Id);
-
                 entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd(); 
+                    .UseIdentityAlwaysColumn();
 
                 entity.HasOne<User>()
                     .WithMany()
                     .HasForeignKey(t => t.ParentId)
+                    .HasPrincipalKey(u => u.UserId)  
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne<User>()
                     .WithMany()
                     .HasForeignKey(t => t.ChildId)
+                    .HasPrincipalKey(u => u.UserId)  
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-
-            // Конфигурация для User
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Id)
+                entity.HasKey(e => e.UserId);  
+                entity.Property(e => e.UserId)
                     .UseIdentityAlwaysColumn();
+        
+                entity.HasIndex(e => e.Email)
+                    .IsUnique();
             });
         }
     }
 }
+    

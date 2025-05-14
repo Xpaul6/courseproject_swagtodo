@@ -47,7 +47,7 @@ ALTER TABLE public.tasks OWNER TO postgres;
 --
 
 CREATE TABLE public.users (
-    id integer NOT NULL,
+    userid integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name character varying(100) NOT NULL,
     email character varying(100) NOT NULL,
     password text NOT NULL,
@@ -74,7 +74,7 @@ COPY public.tasks (id, parent_id, child_id, description, deadline, reward, statu
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, name, email, password, role, created_at) FROM stdin;
+COPY public.users (userid, name, email, password, role, created_at) FROM stdin;
 \.
 
 
@@ -93,7 +93,7 @@ ALTER TABLE ONLY public.tasks
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT users_pkey PRIMARY KEY (userid);
 
 
 --
@@ -102,7 +102,7 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE ONLY public.tasks
-    ADD CONSTRAINT childid FOREIGN KEY (child_id) REFERENCES public.users(id);
+    ADD CONSTRAINT childid FOREIGN KEY (child_id) REFERENCES public.users(userid);
 
 
 --
@@ -111,7 +111,7 @@ ALTER TABLE ONLY public.tasks
 --
 
 ALTER TABLE ONLY public.tasks
-    ADD CONSTRAINT parentid FOREIGN KEY (parent_id) REFERENCES public.users(id);
+    ADD CONSTRAINT parentid FOREIGN KEY (parent_id) REFERENCES public.users(userid);
 
 
 -- Completed on 2025-05-09 20:47:19
