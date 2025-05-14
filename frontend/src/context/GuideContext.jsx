@@ -1,15 +1,13 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
 export const GuideContext = createContext();
 
 export const GuideProvider = ({ children }) => {
-  const [path, setPath] = useState("/")
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'F1' || event.keyCode === 112) {
         event.preventDefault();
-        window.open('/guide')
+        window.location.href = '/guide'
       }
     };
 
@@ -18,7 +16,7 @@ export const GuideProvider = ({ children }) => {
   }, []);
 
   return (
-    <GuideContext.Provider value={{ path, setPath }}>
+    <GuideContext.Provider value={{}}>
       {children}
     </GuideContext.Provider>
   );
