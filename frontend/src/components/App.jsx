@@ -17,6 +17,9 @@ function App() {
 
   return (
     <>
+      <Link to="/docs" className='visible absolute top-0 left-0 p-2 text-xl'>
+        Помощь
+      </Link>
       <div className="pagebox">
         <h2>SWAG ToDo</h2>
         <p>{apiText}</p>
@@ -29,9 +32,6 @@ function App() {
           </Link>
           <Link to="/login" className="link">
             Войти как ребенок
-          </Link>
-          <Link to="/parent-menu" className='link text-red-500'>
-            Mеню родителя
           </Link>
         </div>
       </div>
