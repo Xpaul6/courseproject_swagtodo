@@ -20,7 +20,7 @@ function App() {
       <Link to="/docs" className='visible absolute top-0 left-0 p-2 text-xl'>
         Помощь
       </Link>
-      <Link to="/guides" className='visible absolute top-0 left-0 p-2 text-xl'>
+      <Link to="/guides" className='visible absolute top-0 right-0 p-2 text-xl'>
         Справка (если F1 не работает)
       </Link>
       <div className="pagebox">
