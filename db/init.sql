@@ -28,16 +28,34 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.tasks (
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id integer GENERATED ALWAYS AS IDENTITY,
     parent_id integer NOT NULL,
     child_id integer NOT NULL,
     description text NOT NULL,
     deadline date,
     reward text,
-    status character varying(20) NOT NULL,
-    created_at date NOT NULL
+    status character varying(20) NOT NULL DEFAULT 'ongoing',
+    created_at date NOT NULL DEFAULT CURRENT_DATE,
+    
+    CONSTRAINT tasks_pkey PRIMARY KEY (id),
+    CONSTRAINT task_parent_fk FOREIGN KEY (parent_id)
+      REFERENCES public.users(userid) ON DELETE RESTRICT,
+    CONSTRAINT task_child_fk FOREIGN KEY (child_id)
+      REFERENCES public.users(userid) ON DELETE RESTRICT
 );
 
+-- Create indexes for better performance
+CREATE INDEX idx_tasks_parent ON public.tasks(parent_id);
+CREATE INDEX idx_tasks_child ON public.tasks(child_id);
+CREATE INDEX idx_tasks_status ON public.tasks(status);
+
+-- Set table ownership
+ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.tasks OWNER TO postgres;
+
+-- Add table comments
+COMMENT ON TABLE public.users IS 'System users including parents and children';
+COMMENT ON TABLE public.tasks IS 'Tasks assigned by parents to children';
 
 ALTER TABLE public.tasks OWNER TO postgres;
 
@@ -47,12 +65,13 @@ ALTER TABLE public.tasks OWNER TO postgres;
 --
 
 CREATE TABLE public.users (
-    userid integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    userid integer GENERATED ALWAYS AS IDENTITY,
     name character varying(100) NOT NULL,
     email character varying(100) NOT NULL,
     password text NOT NULL,
     role character varying(10) NOT NULL,
-    created_at date NOT NULL
+    created_at date NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (userid)
 );
 
 

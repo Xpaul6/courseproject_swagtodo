@@ -21,22 +21,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-<<<<<<< HEAD
-
 // БД
-=======
->>>>>>> a1a0559f7e46087aad19dafeba9d6c40810fadb2
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
 }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> a1a0559f7e46087aad19dafeba9d6c40810fadb2
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -147,6 +140,69 @@ app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
     await db.SaveChangesAsync();
     return Results.Ok(task);
 });
+
+// Отклонение выполнения задания 
+app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
+{
+    var task = await db.Tasks.FindAsync(taskId);
+
+    if (task is null || task.Status != "pending")
+        return Results.BadRequest("Задача не найдена или статус некорректен.");
+
+    task.Status = "ongoing";
+    await db.SaveChangesAsync();
+
+    return Results.Ok(task);
+});
+
+// Показать задания, которые ребенок отметил выполненными (на проверке)
+app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext db) =>
+{
+    var tasks = await db.Tasks
+        .Where(t => t.ParentId == parentId && t.Status == "pending")
+        .ToListAsync();
+    return Results.Ok(tasks);
+});
+
+// Показать задания, которые ребенок еще не выполнил
+app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbContext db) =>
+{
+    var tasks = await db.Tasks
+        .Where(t => t.ParentId == parentId && t.Status == "ongoing")
+        .ToListAsync();
+    return Results.Ok(tasks);
+});
+
+//РЕБЕНОК
+// Получение всех задач ребенка
+app.MapGet("/tasks/child/{childId}", async (int childId, AppDbContext db) =>
+{
+    var tasks = await db.Tasks
+        .Where(t => t.ChildId == childId)
+        .ToListAsync();
+    return Results.Ok(tasks);
+});
+
+// Получение не выполненных задач ребенка
+app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db) =>
+{
+    var tasks = await db.Tasks
+        .Where(t => t.ChildId == childId && t.Status == "ongoing")
+        .ToListAsync();
+    return Results.Ok(tasks);
+});
+
+// Пометить задачу как "выполненную" у ребенка
+app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
+{
+    var task = await db.Tasks.FindAsync(id);
+    if (task is null || task.Status != "ongoing")
+        return Results.BadRequest("Задача не найдена или уже в статусе pending/completed.");
+    task.Status = "pending";
+    await db.SaveChangesAsync();
+    return Results.Ok(task);
+});
+
 
 
 
