@@ -25,37 +25,31 @@ function Parent_menu() {
               </div>
             </div>
           </div>
-          <div className="mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 sm:w-2/5 border-2 border-blue-400 rounded-md">
-            <h3 className="text-center my-2 pb-2 border-b-1 border-blue-200">
+          <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
+            <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
               Список 1
             </h3>
             <span className="text-center">Задача 1</span>
             <span className="text-center">Задача 2</span>
             <span className="text-center">Задача 3</span>
             <span className="text-center">Задача 4</span>
-            <div className="w-full flex flex-row-reverse sm:mt-auto">
-              <button className="py-2 px-3.5 text-xl text-white border-2 rounded-xl bg-green-500">
-                +
-              </button>
-            </div>
+            <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+              rounded-xl bg-green-500 sm:cursor-pointer">
+              +
+            </button>
           </div>
-          <div className="mt-10 sm:mt-0 flex flex-col p-2 sm:w-2/6 border-2 border-indigo-400 rounded-md sm:ml-15 sm:mr-6">
-            <h3 className="text-center my-2 pb-2 border-b-1 border-indigo-200">
+          <div className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md sm:ml-15 sm:mr-6">
+            <h3 className="sticky text-center mb-2 pt-2 pb-2 border-b-1 border-indigo-200">
               Статистика
             </h3>
             <div className="flex justify-evenly">
-              <div className="">
-                Имя Фамилия
-              </div>
-              <div>
-                2/10
-              </div>
+              <div className="">Имя Фамилия</div>
+              <div>2/10</div>
             </div>
-            <div className="w-full flex flex-row-reverse sm:mt-auto">
-              <button className="py-2 px-3.5 text-xl text-white border-2 rounded-xl bg-green-500">
-                +
-              </button>
-            </div>
+            <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+              rounded-xl bg-green-500 sm:cursor-pointer">
+              +
+            </button>
           </div>
         </div>
       </div>
