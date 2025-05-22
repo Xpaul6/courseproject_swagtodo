@@ -1,4 +1,5 @@
 import '../styles/main.css'
+import Task from './blocks/Task'
 
 function Parent_menu() {
   return (
@@ -29,10 +30,11 @@ function Parent_menu() {
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
               Список 1
             </h3>
-            <span className="text-center">Задача 1</span>
-            <span className="text-center">Задача 2</span>
-            <span className="text-center">Задача 3</span>
-            <span className="text-center">Задача 4</span>
+            <Task />
+            <Task />
+            <Task />
+            <Task />
+            <Task />
             <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer">
               +
