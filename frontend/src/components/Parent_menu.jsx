@@ -8,10 +8,12 @@ function Parent_menu() {
     <>
       <div className="p-5 w-full">
         <h2 className="text-center">Меню родителя</h2>
+        {/* Main block */}
         <div className="flex sm:flex-row sm:justify-around flex-col mt-10 sm:h-[400px]">
-          <div className="overflow-x-auto whitespace-nowrap sm:overflow-visible sm:whitespace-normal">
+          {/* Lists titles */}
+          <div className="overflow-x-auto whitespace-nowrap sm:overflow-visible sm:whitespace-normal sm:ml-6 sm:w-[100px]">
             <div
-              className="flex flex-row sm:flex-col justify-evenly sm:min-w-[100px] border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
+              className="flex flex-row sm:flex-col justify-evenly border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
             >
               <div className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
@@ -28,6 +30,7 @@ function Parent_menu() {
               </div>
             </div>
           </div>
+          {/* Current list block */}
           <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
               Список 1
@@ -42,6 +45,7 @@ function Parent_menu() {
               +
             </button>
           </div>
+          {/* Stats block */}
           <div className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md sm:ml-15 sm:mr-6 overflow-x-scroll">
             <h3 className="sticky text-center mb-2 pt-2 pb-2 border-b-1 border-indigo-200">
               Статистика
