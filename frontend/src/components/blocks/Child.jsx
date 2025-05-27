@@ -6,7 +6,7 @@ function Child() {
         <div>2/10</div>
       </div>
     </>
-  );
+  )
 }
 
 export default Child

@@ -61,7 +61,7 @@ function Parent_menu() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default Parent_menu

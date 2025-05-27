@@ -28,7 +28,7 @@ function Task() {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 export default Task
