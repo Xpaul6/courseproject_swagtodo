@@ -13,6 +13,7 @@ import Guide from './components/Guide.jsx'
 import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
 import Parent_menu from './components/Parent_menu.jsx'
+import Child_menu from './components/Child_menu.jsx'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: '/parent-menu',
     element: <Parent_menu />
+  },
+  {
+    path: '/child-menu',
+    element: <Child_menu />
   }
 ])
 

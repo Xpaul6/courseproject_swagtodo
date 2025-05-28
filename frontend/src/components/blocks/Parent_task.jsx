@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function Task() {
+function Parent_task() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -31,4 +31,4 @@ function Task() {
   )
 }
 
-export default Task
+export default Parent_task
