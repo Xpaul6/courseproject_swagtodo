@@ -1,9 +1,20 @@
+import { useNavigate } from 'react-router'
+
 import '../styles/main.css'
 
 import Parent_task from './blocks/Parent_task'
 import Child from './blocks/Child';
 
 function Parent_menu() {
+  let navigate = useNavigate()
+
+  function CreateNewTask() {
+    // ToDo
+    console.log(1);
+    
+    navigate('/new-task')
+  }
+
   return (
     <>
       <div className="p-5 w-full">
@@ -40,28 +51,34 @@ function Parent_menu() {
             <Parent_task />
             <Parent_task />
             <Parent_task />
-            <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
-              rounded-xl bg-green-500 sm:cursor-pointer">
+            <button
+              className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+              rounded-xl bg-green-500 sm:cursor-pointer"
+              onClick={CreateNewTask}
+            >
               +
             </button>
           </div>
           {/* Stats block */}
-          <div className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md sm:ml-15 sm:mr-6 overflow-x-scroll">
+          <div className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md
+            sm:ml-15 sm:mr-6 overflow-x-scroll">
             <h3 className="sticky text-center mb-2 pt-2 pb-2 border-b-1 border-indigo-200">
               Статистика
             </h3>
             <Child />
             <Child />
             <Child />
-            <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
-              rounded-xl bg-green-500 sm:cursor-pointer">
+            <button
+              className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+              rounded-xl bg-green-500 sm:cursor-pointer"
+            >
               +
             </button>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default Parent_menu
