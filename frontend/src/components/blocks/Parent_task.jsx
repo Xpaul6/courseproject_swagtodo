@@ -24,7 +24,10 @@ function Parent_task() {
           Удалить
         </button>
         <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
-          Выполнить
+          Подтвердить
+        </button>
+        <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
+          Назначить
         </button>
       </div>
     </div>

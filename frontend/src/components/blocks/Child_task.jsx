@@ -5,7 +5,7 @@ function Child_task() {
         <div className="w-fit">Task description</div>
         <div className="w-fit">Completion reward</div>
       </div>
-      <button className="absolute right-3 p-2 cursor-pointer text-2xl">
+      <button className="absolute right-3 p-2 cursor-pointer text-3xl text-green-500">
         ✓
       </button>
     </div>

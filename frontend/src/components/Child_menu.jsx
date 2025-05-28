@@ -36,10 +36,10 @@ function Child_menu() {
             <Child_task />
             <Child_task />
             <Child_task />
-            <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+            {/* <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer">
               +
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
