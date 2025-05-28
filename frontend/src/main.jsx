@@ -14,6 +14,7 @@ import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
 import Parent_menu from './components/Parent_menu.jsx'
 import Child_menu from './components/Child_menu.jsx'
+import New_task from './components/New_task.jsx'
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: '/child-menu',
     element: <Child_menu />
+  },
+  {
+    path: '/new-task',
+    element: <New_task />
   }
 ])
 
