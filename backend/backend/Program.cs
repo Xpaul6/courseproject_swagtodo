@@ -1,6 +1,13 @@
 using backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+
 
 // Сваггер
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +27,51 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+
+
+// Авторизация 
+app.MapPost("/login", async (LoginRequest request, AppDbContext db) =>
+{
+    var user = await db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+    if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+    {
+        return Results.Unauthorized();
+    }
+
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+    
+    var jwtKey = builder.Configuration["Jwt:Key"] 
+                 ?? throw new InvalidOperationException("JWT Key not configured");
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var token = new JwtSecurityToken(
+        issuer: builder.Configuration["Jwt:Issuer"],
+        audience: builder.Configuration["Jwt:Issuer"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddDays(1),
+        signingCredentials: creds 
+    );
+
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+    return Results.Ok(new { Token = tokenString, Role = user.Role, UserId = user.UserId });
+})
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "User login",
+    Description = "Authenticates a user and returns a JWT token",
+    Tags = new List<OpenApiTag> { new() { Name = "Authentication" } }
+});
 
 // БД
 using (var scope = app.Services.CreateScope())
@@ -84,14 +136,14 @@ app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
         Description = request.Description,
         Deadline = request.Deadline,
         Reward = request.Reward,
-        Status = request.Status ?? "ongoing" 
+        Status = request.Status ?? "ongoing"
     };
-    
+
     await db.Tasks.AddAsync(task);
     await db.SaveChangesAsync();
 
     return Results.Created($"/tasks/{task.Id}", task);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 
 // Получение всех задач родителя
@@ -101,7 +153,7 @@ app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
         .Where(t => t.ParentId == parentId)
         .ToListAsync();
     return Results.Ok(tasks);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Редактирование задания
 app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) =>
@@ -116,7 +168,7 @@ app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) 
 
     await db.SaveChangesAsync();
     return Results.Ok(task);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Удаление задания
 app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
@@ -127,7 +179,7 @@ app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
     db.Tasks.Remove(task);
     await db.SaveChangesAsync();
     return Results.Ok();
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Подтверждение выполнения задания 
 app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
@@ -136,10 +188,10 @@ app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
     if (task is null || task.Status != "pending")
         return Results.BadRequest("Задача не найдена или статус некорректен.");
 
-    task.Status = "completed"; 
+    task.Status = "completed";
     await db.SaveChangesAsync();
     return Results.Ok(task);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Отклонение выполнения задания 
 app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
@@ -153,7 +205,7 @@ app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
     await db.SaveChangesAsync();
 
     return Results.Ok(task);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Показать задания, которые ребенок отметил выполненными (на проверке)
 app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext db) =>
@@ -162,7 +214,7 @@ app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext
         .Where(t => t.ParentId == parentId && t.Status == "pending")
         .ToListAsync();
     return Results.Ok(tasks);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 // Показать задания, которые ребенок еще не выполнил
 app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbContext db) =>
@@ -171,7 +223,7 @@ app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbCo
         .Where(t => t.ParentId == parentId && t.Status == "ongoing")
         .ToListAsync();
     return Results.Ok(tasks);
-});
+}).RequireAuthorization(policy => policy.RequireRole("parent"));
 
 //РЕБЕНОК
 // Получение всех задач ребенка
@@ -181,7 +233,7 @@ app.MapGet("/tasks/child/{childId}", async (int childId, AppDbContext db) =>
         .Where(t => t.ChildId == childId)
         .ToListAsync();
     return Results.Ok(tasks);
-});
+}).RequireAuthorization(policy => policy.RequireRole("child"));
 
 // Получение не выполненных задач ребенка
 app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db) =>
@@ -190,7 +242,7 @@ app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db)
         .Where(t => t.ChildId == childId && t.Status == "ongoing")
         .ToListAsync();
     return Results.Ok(tasks);
-});
+}).RequireAuthorization(policy => policy.RequireRole("child"));
 
 // Пометить задачу как "выполненную" у ребенка
 app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
@@ -201,12 +253,14 @@ app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
     task.Status = "pending";
     await db.SaveChangesAsync();
     return Results.Ok(task);
-});
+}).RequireAuthorization(policy => policy.RequireRole("child"));
 
 
 
 
 app.Run();
+
+public record LoginRequest(string Email, string Password);
 
 public record RegisterRequest(string Name, string Email, string Password, bool IsParent);
 
