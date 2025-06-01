@@ -9,10 +9,13 @@ function Parent_menu() {
   let navigate = useNavigate()
 
   function CreateNewTask() {
-    // ToDo
-    console.log(1);
-    
+    // TODO: 
     navigate('/new-task')
+  }
+
+  function AddChild() {
+    // TODO:
+    navigate('/add-child')
   }
 
   return (
@@ -71,6 +74,7 @@ function Parent_menu() {
             <button
               className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
+              onClick={AddChild}
             >
               +
             </button>
