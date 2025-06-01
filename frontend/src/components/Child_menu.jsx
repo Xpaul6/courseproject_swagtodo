@@ -1,10 +1,12 @@
 import Child_task from './blocks/Child_task'
+import Profile from './blocks/Profile'
 
 function Child_menu() {
   return (
     <>
+      <Profile type="child"/>
       <div className="p-5 w-full">
-        <h2 className="text-center">Меню ребенка</h2>
+        <h2 className="text-center mt-6 sm:mt-0">Меню ребенка</h2>
         {/* Main block */}
         <div className="flex sm:flex-row sm:justify-center flex-col mt-10 sm:h-[500px]">
           {/* Lists titles */}

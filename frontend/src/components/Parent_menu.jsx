@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router'
 import '../styles/main.css'
 
 import Parent_task from './blocks/Parent_task'
-import Child from './blocks/Child';
+import Child from './blocks/Child'
+import Profile from './blocks/Profile'
 
 function Parent_menu() {
   let navigate = useNavigate()
@@ -20,8 +21,9 @@ function Parent_menu() {
 
   return (
     <>
+      <Profile type="parent"/>
       <div className="p-5 w-full">
-        <h2 className="text-center">Меню родителя</h2>
+        <h2 className="text-center mt-6 sm:mt-0">Меню родителя</h2>
         {/* Main block */}
         <div className="flex sm:flex-row sm:justify-around flex-col mt-10 sm:h-[500px]">
           {/* Lists titles */}
