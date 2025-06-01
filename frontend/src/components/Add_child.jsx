@@ -1,4 +1,13 @@
+import { useNavigate } from "react-router"
+
 function Add_child() {
+  const navigate = useNavigate()
+
+  function AddChild() {
+    // TODO:
+    navigate('/parent-menu')
+  }
+
   return (
     <>
       <div className="p-5 w-full">
@@ -20,7 +29,8 @@ function Add_child() {
                 sm:border-green-500 transition-all ease-in-out transition-150 sm:hover:bg-green-500
                 hover:cursor-pointer sm:hover:text-white"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e.preventDefault()
+                  AddChild()
                 }}
               >
                 Добавить

@@ -1,7 +1,14 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 
 function Profile({type}) {
+  const navigate = useNavigate()
   const [isOpen, SetIsOpen] = useState(false)
+
+  function LogOut() {
+    // TODO:
+    navigate('/')
+  }
 
   return (
     <>
@@ -18,7 +25,7 @@ function Profile({type}) {
               isOpen ? "max-h-24" : "max-h-0"
             }`}
         >
-          <button className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer">
+          <button className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer" onClick={LogOut}>
             Выйти
           </button>
           {type == "child" ? (

@@ -1,6 +1,16 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+
 import '../styles/main.css'
 
 function Register() {
+  const navigate = useNavigate()
+  const [accountType, SetAccountType] = useState("");
+
+  function Register() {
+    // TODO:
+    accountType == "parent" ? navigate('/parent-menu') : navigate('/child-menu') 
+  }
   return (
     <>
       <div className="pagebox">
@@ -17,7 +27,7 @@ function Register() {
             className="mt-5 p-1 rounded-md border border-gray-300 placeholder:text-center"
           />
           <div className="mt-5">
-            <input type="radio" id="parent" name="role" value="parent" />
+            <input type="radio" id="parent" name="role" value="parent" onChangeCapture={(e) => SetAccountType(e.target.value)} />
             <label htmlFor="parent" className="ml-2">
               Родитель
             </label>
@@ -38,7 +48,8 @@ function Register() {
               sm:border-green-500 transition-all ease-in-out transition-15 sm:hover:bg-green-500
                 hover:cursor-pointer sm:hover:text-white"
             onClick={(e) => {
-              e.preventDefault();
+              e.preventDefault()
+              Register()
             }}
           >
             Зарегистрироваться

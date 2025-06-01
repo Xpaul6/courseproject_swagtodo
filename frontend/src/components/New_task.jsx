@@ -1,4 +1,13 @@
+import { useNavigate } from "react-router"
+
 function New_task() {
+  const navigate = useNavigate()
+
+  function AddTask() {
+    // TODO:
+    navigate('/parent-menu')
+  }
+
   return (
     <>
       <div className="p-5 w-full">
@@ -43,7 +52,8 @@ function New_task() {
                 sm:border-green-500 transition-all ease-in-out transition-150 sm:hover:bg-green-500
                 hover:cursor-pointer sm:hover:text-white"
                 onClick={(e) => {
-                  e.preventDefault();
+                  e.preventDefault()
+                  AddTask()
                 }}
               >
                 Создать
