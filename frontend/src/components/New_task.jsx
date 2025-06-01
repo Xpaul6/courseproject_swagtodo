@@ -18,6 +18,17 @@ function New_task() {
                 placeholder="Описание задания"
                 className="mt-5 p-1 rounded-md border border-gray-300 placeholder:text-center"
               />
+              <select
+                className="mt-5 p-1 rounded-md border border-gray-300 text-center"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Выберите ребенка
+                </option>
+                <option value="1">Ребенок 1</option>
+                <option value="2">Ребенок 2</option>
+                <option value="3">Ребенок 3</option>
+              </select>
               <input
                 type="text"
                 placeholder="Награда"
@@ -25,7 +36,6 @@ function New_task() {
               />
               <input
                 type="date"
-                placeholder="Награда"
                 className="mt-5 p-1 rounded-md border border-gray-300 placeholder:text-center"
               />
               <button

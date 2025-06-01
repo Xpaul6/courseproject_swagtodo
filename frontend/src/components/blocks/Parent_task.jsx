@@ -25,9 +25,6 @@ function Parent_task() {
         <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
           Подтвердить
         </button>
-        <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
-          Назначить
-        </button>
       </div>
     </div>
   )
