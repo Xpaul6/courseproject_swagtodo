@@ -6,16 +6,18 @@ import './styles/main.css'
 
 import { GuideProvider } from './context/GuideContext.jsx'
 import Docs from './components/Docs.jsx'
+import Guide from './components/Guide.jsx'
 
 import App from './components/App.jsx'
 import Error from './components/Error.jsx'
-import Guide from './components/Guide.jsx'
 import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
 import Parent_menu from './components/Parent_menu.jsx'
 import Child_menu from './components/Child_menu.jsx'
 import New_task from './components/New_task.jsx'
 import Add_child from './components/Add_child.jsx'
+
+import DataContextProvider from './context/DataContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -59,8 +61,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <GuideProvider>
-      <RouterProvider router={router} />
-    </GuideProvider>
+    <DataContextProvider>
+      <GuideProvider>
+        <RouterProvider router={router} />
+      </GuideProvider>
+    </DataContextProvider>
   </StrictMode>,
 )

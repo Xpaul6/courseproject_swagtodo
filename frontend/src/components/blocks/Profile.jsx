@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { useContext } from 'react'
+
+import { DataContext } from '../../context/DataContext.jsx'
 
 function Profile({type}) {
   const navigate = useNavigate()
   const [isOpen, SetIsOpen] = useState(false)
+  const data = useContext(DataContext)
 
   function LogOut() {
     // TODO:
@@ -31,7 +35,7 @@ function Profile({type}) {
           {type == "child" ? (
             <>
               <div className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                Код: 1234
+                Код: {data === undefined ? "undefined" : data.user.userid}
               </div>
             </>
           ) : (
