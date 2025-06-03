@@ -27,6 +27,19 @@ SET default_table_access_method = heap;
 -- Name: tasks; Type: TABLE; Schema: public; Owner: postgres
 --
 
+CREATE TABLE public.users (
+    userid integer GENERATED ALWAYS AS IDENTITY,
+    name character varying(100) NOT NULL,
+    email character varying(100) NOT NULL,
+    password text NOT NULL,
+    role character varying(10) NOT NULL,
+    created_at date NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (userid)
+);
+
+ALTER TABLE public.users OWNER TO postgres;
+
+
 CREATE TABLE public.tasks (
     id integer GENERATED ALWAYS AS IDENTITY,
     parent_id integer NOT NULL,
@@ -63,19 +76,6 @@ ALTER TABLE public.tasks OWNER TO postgres;
 -- TOC entry 217 (class 1259 OID 16389)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
-
-CREATE TABLE public.users (
-    userid integer GENERATED ALWAYS AS IDENTITY,
-    name character varying(100) NOT NULL,
-    email character varying(100) NOT NULL,
-    password text NOT NULL,
-    role character varying(10) NOT NULL,
-    created_at date NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (userid)
-);
-
-
-ALTER TABLE public.users OWNER TO postgres;
 
 --
 -- TOC entry 4897 (class 0 OID 16396)
