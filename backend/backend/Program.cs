@@ -90,7 +90,7 @@ app.UseAuthorization();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
+    dbContext.Database.Migrate();
 }
 
 // Авторизация 
@@ -196,7 +196,7 @@ app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
 {
     // Проверяем, что список задач существует и принадлежит родителю
     var taskList = await db.TaskLists
-        .FirstOrDefaultAsync(tl => tl.Id == request.TaskListId && tl.ParentId == request.ParentId);
+        .FirstOrDefaultAsync(tl => tl.ListId == request.TaskListId && tl.ParentId == request.ParentId);
     if (taskList is null)
     {
         return Results.BadRequest("Task list does not exist or does not belong to the parent");
@@ -223,7 +223,7 @@ app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
     await db.Tasks.AddAsync(task);
     await db.SaveChangesAsync();
 
-    return Results.Created($"/tasks/{task.Id}", task);
+    return Results.Created($"/tasks/{task.TaskId}", task);
 })
 .RequireAuthorization(policy => policy.RequireRole("parent"))
 .WithOpenApi(operation => new(operation)
@@ -367,7 +367,7 @@ app.MapPost("/tasklists", async (TaskListCreateRequest request, AppDbContext db)
     db.TaskLists.Add(taskList);
     await db.SaveChangesAsync();
 
-    return Results.Created($"/tasklists/{taskList.Id}", taskList);
+    return Results.Created($"/tasklists/{taskList.ListId}", taskList);
 })
 .RequireAuthorization(policy => policy.RequireRole("parent"))
 .WithOpenApi(operation => new(operation)

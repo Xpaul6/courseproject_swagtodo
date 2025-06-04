@@ -13,8 +13,8 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<TaskList>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id)
+            entity.HasKey(e => e.ListId);
+            entity.Property(e => e.ListId)
                 .UseIdentityAlwaysColumn();
 
             entity.HasOne<User>()
@@ -32,8 +32,8 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<TaskItem>(entity =>
         {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id)
+            entity.HasKey(e => e.TaskId);
+            entity.Property(e => e.TaskId)
                 .UseIdentityAlwaysColumn();
 
             entity.HasOne<User>()

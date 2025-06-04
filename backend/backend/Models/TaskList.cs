@@ -6,7 +6,8 @@ namespace backend.Models
     [Table("task_lists")]
     public class TaskList
     {
-        [Key][Column("id")] public int Id { get; set; }
+        [Key]
+        [Column("id")] public int ListId { get; set; }
 
         [Column("parent_id")]
         [Required]

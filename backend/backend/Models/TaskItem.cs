@@ -6,7 +6,7 @@ public class TaskItem
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int TaskId { get; set; }
 
     [Column("parent_id")]
     [Required]
