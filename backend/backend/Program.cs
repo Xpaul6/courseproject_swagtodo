@@ -194,22 +194,44 @@ app.MapPost("/register", async (RegisterRequest request, AppDbContext db) =>
 // Создание задания
 app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
 {
+    // Проверяем, что список задач существует и принадлежит родителю
+    var taskList = await db.TaskLists
+        .FirstOrDefaultAsync(tl => tl.Id == request.TaskListId && tl.ParentId == request.ParentId);
+    if (taskList is null)
+    {
+        return Results.BadRequest("Task list does not exist or does not belong to the parent");
+    }
+
+    // Проверяем, что ребёнок соответствует списку
+    if (taskList.ChildId != request.ChildId)
+    {
+        return Results.BadRequest("Child does not match the task list");
+    }
+
     var task = new TaskItem
     {
         ParentId = request.ParentId,
         ChildId = request.ChildId,
+        TaskListId = request.TaskListId,
         Description = request.Description,
         Deadline = request.Deadline,
         Reward = request.Reward,
-        Status = request.Status ?? "ongoing"
+        Status = request.Status ?? "ongoing",
+        CreatedAt = DateTime.UtcNow.Date
     };
 
     await db.Tasks.AddAsync(task);
     await db.SaveChangesAsync();
 
     return Results.Created($"/tasks/{task.Id}", task);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
-
+})
+.RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Create a new task",
+    Description = "Creates a new task assigned to a child within a specific task list",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks" } }
+});
 
 // Получение всех задач родителя
 app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
@@ -439,167 +461,6 @@ app.MapDelete("/tasklists/{id}", async (int id, AppDbContext db) =>
     Description = "Deletes a task list and its associated tasks (cascade delete)",
     Tags = new List<OpenApiTag> { new() { Name = "Task Lists" } }
 });
-
-// Создание задания
-app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
-{
-    // Проверяем, что список задач существует и принадлежит родителю
-    var taskList = await db.TaskLists
-        .FirstOrDefaultAsync(tl => tl.Id == request.TaskListId && tl.ParentId == request.ParentId);
-    if (taskList is null)
-    {
-        return Results.BadRequest("Task list does not exist or does not belong to the parent");
-    }
-
-    // Проверяем, что ребёнок соответствует списку
-    if (taskList.ChildId != request.ChildId)
-    {
-        return Results.BadRequest("Child does not match the task list");
-    }
-
-    var task = new TaskItem
-    {
-        ParentId = request.ParentId,
-        ChildId = request.ChildId,
-        TaskListId = request.TaskListId,
-        Description = request.Description,
-        Deadline = request.Deadline,
-        Reward = request.Reward,
-        Status = request.Status ?? "ongoing",
-        CreatedAt = DateTime.UtcNow.Date
-    };
-
-    await db.Tasks.AddAsync(task);
-    await db.SaveChangesAsync();
-
-    return Results.Created($"/tasks/{task.Id}", task);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"))
-.WithOpenApi(operation => new(operation)
-{
-    Summary = "Create a new task",
-    Description = "Creates a new task assigned to a child within a specific task list",
-    Tags = new List<OpenApiTag> { new() { Name = "Tasks" } }
-});
-
-// Получение всех задач родителя
-app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
-{
-    var tasks = await db.Tasks
-        .Where(t => t.ParentId == parentId)
-        .ToListAsync();
-    return Results.Ok(tasks);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Редактирование задания
-app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) =>
-{
-    var task = await db.Tasks.FindAsync(id);
-    if (task is null) return Results.NotFound();
-
-    task.Description = updatedTask.Description;
-    task.Deadline = updatedTask.Deadline;
-    task.Reward = updatedTask.Reward;
-    task.Status = updatedTask.Status;
-
-    await db.SaveChangesAsync();
-    return Results.Ok(task);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Удаление задания
-app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
-{
-    var task = await db.Tasks.FindAsync(id);
-    if (task is null) return Results.NotFound();
-
-    db.Tasks.Remove(task);
-    await db.SaveChangesAsync();
-    return Results.Ok();
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Подтверждение выполнения задания
-app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
-{
-    var task = await db.Tasks.FindAsync(id);
-    if (task is null || task.Status != "pending")
-        return Results.BadRequest("Задача не найдена или статус некорректен.");
-
-    task.Status = "completed";
-    await db.SaveChangesAsync();
-    return Results.Ok(task);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Отклонение выполнения задания
-app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
-{
-    var task = await db.Tasks.FindAsync(taskId);
-
-    if (task is null || task.Status != "pending")
-        return Results.BadRequest("Задача не найдена или статус некорректен.");
-
-    task.Status = "ongoing";
-    await db.SaveChangesAsync();
-
-    return Results.Ok(task);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Показать задания, которые ребенок отметил выполненными (на проверке)
-app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext db) =>
-{
-    var tasks = await db.Tasks
-        .Where(t => t.ParentId == parentId && t.Status == "pending")
-        .ToListAsync();
-    return Results.Ok(tasks);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// Показать задания, которые ребенок еще не выполнил
-app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbContext db) =>
-{
-    var tasks = await db.Tasks
-        .Where(t => t.ParentId == parentId && t.Status == "ongoing")
-        .ToListAsync();
-    return Results.Ok(tasks);
-})
-.RequireAuthorization(policy => policy.RequireRole("parent"));
-
-// РЕБЕНОК
-// Получение всех задач ребенка
-app.MapGet("/tasks/child/{childId}", async (int childId, AppDbContext db) =>
-{
-    var tasks = await db.Tasks
-        .Where(t => t.ChildId == childId)
-        .ToListAsync();
-    return Results.Ok(tasks);
-})
-.RequireAuthorization(policy => policy.RequireRole("child"));
-
-// Получение не выполненных задач ребенка
-app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db) =>
-{
-    var tasks = await db.Tasks
-        .Where(t => t.ChildId == childId && t.Status == "ongoing")
-        .ToListAsync();
-    return Results.Ok(tasks);
-})
-.RequireAuthorization(policy => policy.RequireRole("child"));
-
-// Пометить задачу как "выполненную" у ребенка
-app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
-{
-    var task = await db.Tasks.FindAsync(id);
-    if (task is null || task.Status != "ongoing")
-        return Results.BadRequest("Задача не найдена или уже в статусе pending/completed.");
-    task.Status = "pending";
-    await db.SaveChangesAsync();
-    return Results.Ok(task);
-})
-.RequireAuthorization(policy => policy.RequireRole("child"));
 
 app.Run();
 
