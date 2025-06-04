@@ -230,7 +230,7 @@ app.MapPost("/tasks", async (TaskCreateRequest request, AppDbContext db) =>
 {
     Summary = "Create a new task",
     Description = "Creates a new task assigned to a child within a specific task list",
-    Tags = new List<OpenApiTag> { new() { Name = "Tasks" } }
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
 });
 
 // Получение всех задач родителя
@@ -240,7 +240,13 @@ app.MapGet("/tasks/parent/{parentId}", async (int parentId, AppDbContext db) =>
         .Where(t => t.ParentId == parentId)
         .ToListAsync();
     return Results.Ok(tasks);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Get all parent's tasks",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Редактирование задания
 app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) =>
@@ -255,7 +261,13 @@ app.MapPut("/tasks/{id}", async (int id, TaskItem updatedTask, AppDbContext db) 
 
     await db.SaveChangesAsync();
     return Results.Ok(task);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Edit specific task",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Удаление задания
 app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
@@ -266,7 +278,13 @@ app.MapDelete("/tasks/{id}", async (int id, AppDbContext db) =>
     db.Tasks.Remove(task);
     await db.SaveChangesAsync();
     return Results.Ok();
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Delete specific task",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Подтверждение выполнения задания 
 app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
@@ -278,7 +296,13 @@ app.MapPost("/tasks/{id}/approve", async (int id, AppDbContext db) =>
     task.Status = "completed";
     await db.SaveChangesAsync();
     return Results.Ok(task);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Task completion approve",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Отклонение выполнения задания 
 app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
@@ -292,7 +316,13 @@ app.MapPost("/tasks/{taskId}/reject", async (int taskId, AppDbContext db) =>
     await db.SaveChangesAsync();
 
     return Results.Ok(task);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Task completion reject",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Показать задания, которые ребенок отметил выполненными (на проверке)
 app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext db) =>
@@ -301,7 +331,13 @@ app.MapGet("/tasks/parent/{parentId}/pending", async (int parentId, AppDbContext
         .Where(t => t.ParentId == parentId && t.Status == "pending")
         .ToListAsync();
     return Results.Ok(tasks);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Show all tasks that child marked as completed",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 // Показать задания, которые ребенок еще не выполнил
 app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbContext db) =>
@@ -310,7 +346,13 @@ app.MapGet("/tasks/parent/{parentId}/notcompleted", async (int parentId, AppDbCo
         .Where(t => t.ParentId == parentId && t.Status == "ongoing")
         .ToListAsync();
     return Results.Ok(tasks);
-}).RequireAuthorization(policy => policy.RequireRole("parent"));
+}).RequireAuthorization(policy => policy.RequireRole("parent"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Show all undone tasks",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (parent)" } }
+});
 
 //РЕБЕНОК
 // Получение всех задач ребенка
@@ -320,7 +362,13 @@ app.MapGet("/tasks/child/{childId}", async (int childId, AppDbContext db) =>
         .Where(t => t.ChildId == childId)
         .ToListAsync();
     return Results.Ok(tasks);
-}).RequireAuthorization(policy => policy.RequireRole("child"));
+}).RequireAuthorization(policy => policy.RequireRole("child"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Get all tasks given to the child",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (child)" } }
+});
 
 // Получение не выполненных задач ребенка
 app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db) =>
@@ -329,7 +377,13 @@ app.MapGet("/tasks/child/{childId}/active", async (int childId, AppDbContext db)
         .Where(t => t.ChildId == childId && t.Status == "ongoing")
         .ToListAsync();
     return Results.Ok(tasks);
-}).RequireAuthorization(policy => policy.RequireRole("child"));
+}).RequireAuthorization(policy => policy.RequireRole("child"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Get all undone tasks",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (child)" } }
+});
 
 // Пометить задачу как "выполненную" у ребенка
 app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
@@ -340,8 +394,13 @@ app.MapPost("/tasks/{id}/complete", async (int id, AppDbContext db) =>
     task.Status = "pending";
     await db.SaveChangesAsync();
     return Results.Ok(task);
-}).RequireAuthorization(policy => policy.RequireRole("child"));
-
+}).RequireAuthorization(policy => policy.RequireRole("child"))
+.WithOpenApi(operation => new(operation)
+{
+    Summary = "Mark task as completed",
+    Description = "",
+    Tags = new List<OpenApiTag> { new() { Name = "Tasks (child)" } }
+});
 
 
 
