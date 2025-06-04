@@ -102,10 +102,6 @@ COPY public.users (userid, name, email, password, role, created_at) FROM stdin;
 -- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.tasks
-    ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);
-
-
 --
 -- TOC entry 4746 (class 2606 OID 16395)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -138,4 +134,3 @@ ALTER TABLE ONLY public.tasks
 --
 -- PostgreSQL database dump complete
 --
-
