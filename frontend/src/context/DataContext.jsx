@@ -4,7 +4,7 @@ import { createContext, useEffect } from 'react'
 
 const defaultData = {
   user: {
-    userid: 0,
+    id: 0,
     name: "undefined",
     email: "undefined",
     password: "undefined",
