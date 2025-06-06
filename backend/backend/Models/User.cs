@@ -31,5 +31,13 @@ namespace backend.Models
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
+        [Column("parent_id")]
+        public int? ParentId { get; set; }
+
+        [ForeignKey("ParentId")]
+        public User? Parent { get; set; }
+        
+        public ICollection<FamilyCode>? FamilyCodes { get; set; }
     }
 }
