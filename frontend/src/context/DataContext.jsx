@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode'
+
 import { createContext, useEffect } from 'react'
 
 const defaultData = {
@@ -17,17 +19,47 @@ const defaultData = {
     deadline: "undefined",
     reward: "undefined",
     status: "undefined",
-    createdat: "undefined"
+    createdate: "undefined"
   },
-  // currentList: {TBD}
+  currentList: {
+    id: 0,
+    parent_id: 0,
+    child_id: 0,
+    title: "undefined",
+    createdate: "undefined"
+  },
   tasks: [],
   lists: []
+}
+
+function isTokenExpired(token) {
+  if (!token) return true
+  
+  try {
+    const decoded = jwtDecode(token)
+    const currentTime = Date.now() / 1000
+    return decoded.exp < currentTime
+  } catch (error) {
+    console.error('Ошибка декодирования токена:', error)
+    localStorage.setItem('token', '')
+    return true
+  }
+};
+
+async function AuthCheck() {
+  const token = localStorage.getItem('token')
+  if (isTokenExpired(token)) {
+    localStorage.setItem('token', '')
+  }
 }
 
 export const DataContext = createContext(defaultData)
 
 export default function DataContextProvider({ children }) {
-  // useEffect(() => console.log(defaultData), [])
+  useEffect(() => {
+    console.log('auth check')
+    AuthCheck()
+  }, [])
 
   return (
     <DataContext.Provider value={defaultData}>
