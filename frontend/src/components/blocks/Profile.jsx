@@ -10,7 +10,8 @@ function Profile({type}) {
   const data = useContext(DataContext)
 
   function LogOut() {
-    // TODO:
+    localStorage.setItem('token', '')
+    localStorage.setItem('role', '')
     navigate('/')
   }
 
