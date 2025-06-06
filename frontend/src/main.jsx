@@ -18,6 +18,7 @@ import New_task from './components/New_task.jsx'
 import Add_child from './components/Add_child.jsx'
 
 import DataContextProvider from './context/DataContext.jsx'
+import { PrivateRoute } from './components/PrivateRoute.jsx'
 
 const router = createBrowserRouter([
   {
@@ -43,19 +44,35 @@ const router = createBrowserRouter([
   },
   {
     path: '/parent-menu',
-    element: <Parent_menu />
+    element: (
+      <PrivateRoute>
+        <Parent_menu />
+      </PrivateRoute>
+    ) 
   },
   {
     path: '/child-menu',
-    element: <Child_menu />
+    element: (
+      <PrivateRoute>
+        <Child_menu />
+      </PrivateRoute>
+    )
   },
   {
     path: '/new-task',
-    element: <New_task />
+    element: (
+      <PrivateRoute>
+        <New_task />
+      </PrivateRoute>
+    )
   },
   {
     path: '/add-child',
-    element: <Add_child />
+    element: (
+      <PrivateRoute>
+        <Add_child />
+      </PrivateRoute>
+    )
   }
 ])
 
