@@ -77,11 +77,11 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <DataContextProvider>
       <GuideProvider>
         <RouterProvider router={router} />
       </GuideProvider>
     </DataContextProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

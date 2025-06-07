@@ -4,7 +4,7 @@ import { useContext } from 'react'
 
 import { DataContext } from '../../context/DataContext.jsx'
 
-function Profile({type}) {
+function Profile({type, code=""}) {
   const navigate = useNavigate()
   const [isOpen, SetIsOpen] = useState(false)
   const data = useContext(DataContext)
@@ -12,6 +12,7 @@ function Profile({type}) {
   function LogOut() {
     localStorage.setItem('token', '')
     localStorage.setItem('role', '')
+    localStorage.setItem('id', '')
     navigate('/')
   }
 
@@ -33,10 +34,10 @@ function Profile({type}) {
           <button className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer" onClick={LogOut}>
             Выйти
           </button>
-          {type == "child" ? (
+          {type == "parent" ? (
             <>
               <div className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                Код: {data === undefined ? "undefined" : data.user.userid}
+                Код: {code}
               </div>
             </>
           ) : (

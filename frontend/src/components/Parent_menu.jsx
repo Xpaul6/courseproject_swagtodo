@@ -1,4 +1,8 @@
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router'
+import axios from 'axios'
+
+import { DataContext } from '../context/DataContext'
 
 import '../styles/main.css'
 
@@ -7,7 +11,10 @@ import Child from './blocks/Child'
 import Profile from './blocks/Profile'
 
 function Parent_menu() {
-  let navigate = useNavigate()
+  const navigate = useNavigate()
+  const data = useContext(DataContext)
+
+  const [familyCode, setFamilyCode] = useState("")
 
   function CreateNewTask() {
     // TODO: 
@@ -19,9 +26,36 @@ function Parent_menu() {
     navigate('/add-child')
   }
 
+  function fetchListsData() {
+
+  }
+
+  function fetchTasksData() {
+
+  }
+
+  function fetchChildrenData() {
+
+  }
+
+  function fetchFamilyCode() {
+    axios.get(`/api/familycode/${data.user.id}`, data.headers)
+      .then(res => {
+        data.familycode = res.data.code
+        setFamilyCode(res.data.code)
+      })
+      .catch(err => alert(err))
+  }
+
+  useEffect(() => {
+    data.user.id = localStorage.getItem('id')
+    console.log(data) // debug
+    fetchFamilyCode()
+  }, [])
+
   return (
     <>
-      <Profile type="parent"/>
+      <Profile type="parent" code={familyCode}/>
       <div className="p-5 w-full">
         <h2 className="text-center mt-6 sm:mt-0">Меню родителя</h2>
         {/* Main block */}
@@ -73,13 +107,13 @@ function Parent_menu() {
             <Child />
             <Child />
             <Child />
-            <button
+            {/* <button
               className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
               onClick={AddChild}
             >
               +
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

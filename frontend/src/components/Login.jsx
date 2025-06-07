@@ -25,6 +25,7 @@ function Login() {
         console.log('login success')
         localStorage.setItem('token', res.data.token)
         localStorage.setItem('role', res.data.role)
+        localStorage.setItem('id', res.data.userId)
         data.user.role = res.data.role
         data.user.id = res.data.userId
         navigate(res.data.role == 'parent' ? navigate('/parent-menu') : navigate('/child-menu'))

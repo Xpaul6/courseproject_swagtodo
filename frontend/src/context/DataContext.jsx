@@ -3,6 +3,12 @@ import { jwtDecode } from 'jwt-decode'
 import { createContext, useEffect } from 'react'
 
 const defaultData = {
+  headers: {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem('token')
+    }
+  },
+  isUpdated: false,
   user: {
     id: 0,
     name: "undefined",
@@ -28,6 +34,8 @@ const defaultData = {
     title: "undefined",
     createdate: "undefined"
   },
+  familycode: "undefined",
+  children: [],
   tasks: [],
   lists: []
 }
@@ -57,7 +65,7 @@ export const DataContext = createContext(defaultData)
 
 export default function DataContextProvider({ children }) {
   useEffect(() => {
-    console.log('auth check')
+    console.log('auth check') // debug
     AuthCheck()
   }, [])
 
