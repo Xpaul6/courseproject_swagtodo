@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
     public required DbSet<User> Users { get; set; }
     public required DbSet<TaskItem> Tasks { get; set; }
     public required DbSet<TaskList> TaskLists { get; set; }
+    public required DbSet<FamilyCode> FamilyCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,6 +62,22 @@ public class AppDbContext : DbContext
                 .UseIdentityAlwaysColumn();
 
             entity.HasIndex(e => e.Email)
+                .IsUnique();
+        });
+        
+        modelBuilder.Entity<FamilyCode>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Iыd)
+                .UseIdentityAlwaysColumn();
+	
+            entity.HasOne(fc => fc.Parent)
+                .WithMany(u => u.FamilyCodes)
+                .HasForeignKey(fc => fc.ParentId)
+                .HasPrincipalKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(fc => fc.Code)
                 .IsUnique();
         });
     }

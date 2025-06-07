@@ -27,6 +27,12 @@ SET default_table_access_method = heap;
 -- Name: tasks; Type: TABLE; Schema: public; Owner: postgres
 --
 
+CREATE TABLE public.familycodes (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    code text NOT NULL UNIQUE,
+    parent_id integer NOT NULL REFERENCES users(userid)
+);
+    
 CREATE TABLE public.users (
     userid integer GENERATED ALWAYS AS IDENTITY,
     name character varying(100) NOT NULL,
@@ -36,6 +42,8 @@ CREATE TABLE public.users (
     created_at date NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (userid)
 );
+
+ALTER TABLE public.users ADD COLUMN parent_id integer REFERENCES public.users(userid);
 
 ALTER TABLE public.users OWNER TO postgres;
 
