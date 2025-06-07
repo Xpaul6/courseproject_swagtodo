@@ -1,10 +1,43 @@
+import { useState, useEffect, useContext } from 'react'
+import axios from 'axios'
+
+import { DataContext } from '../context/DataContext'
+
 import Child_task from './blocks/Child_task'
 import Profile from './blocks/Profile'
 
 function Child_menu() {
+  const data = useContext(DataContext)
+  const [familyCode, setFamilyCode] = useState('')
+
+  function fetchListsData() {
+
+  }
+
+  function fetchTasksData() {
+
+  }
+
+  function handleFamilyLink() {
+    const info = {
+      code: familyCode,
+      childId: localStorage.getItem('id')
+    }
+    axios.post('/api/join', info, data.headers)
+      .then(res => {
+        alert(res.data)
+      })
+      .catch(err => alert(err.response.data))
+  }
+
+  useEffect(() => {
+    data.user.id = localStorage.getItem('id')
+    data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
+  }, [])
+
   return (
     <>
-      <Profile type="child"/>
+      <Profile type="child" familyCode={familyCode} setFamilyCode={setFamilyCode} handleFamilyLink={handleFamilyLink}/>
       <div className="p-5 w-full">
         <h2 className="text-center mt-6 sm:mt-0">Меню ребенка</h2>
         {/* Main block */}

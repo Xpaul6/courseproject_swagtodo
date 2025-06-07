@@ -49,13 +49,13 @@ function Parent_menu() {
 
   useEffect(() => {
     data.user.id = localStorage.getItem('id')
-    console.log(data) // debug
+    data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
     fetchFamilyCode()
   }, [])
 
   return (
     <>
-      <Profile type="parent" code={familyCode}/>
+      <Profile type="parent" familyCode={familyCode}/>
       <div className="p-5 w-full">
         <h2 className="text-center mt-6 sm:mt-0">Меню родителя</h2>
         {/* Main block */}

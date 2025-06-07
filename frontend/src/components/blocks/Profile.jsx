@@ -4,7 +4,7 @@ import { useContext } from 'react'
 
 import { DataContext } from '../../context/DataContext.jsx'
 
-function Profile({type, code=""}) {
+function Profile({type, familyCode, setFamilyCode = () => {}, handleFamilyLink = () => {}}) {
   const navigate = useNavigate()
   const [isOpen, SetIsOpen] = useState(false)
   const data = useContext(DataContext)
@@ -28,7 +28,7 @@ function Profile({type, code=""}) {
         <div
           className={`absolute w-full bg-white top-10 flex flex-col justify-center shadow-md rounded-md
             overflow-hidden transition-all duration-200 ease-in-out z-10 ${
-              isOpen ? "max-h-24" : "max-h-0"
+              isOpen ? "max-h-36" : "max-h-0"
             }`}
         >
           <button className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer" onClick={LogOut}>
@@ -37,11 +37,22 @@ function Profile({type, code=""}) {
           {type == "parent" ? (
             <>
               <div className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                Код: {code}
+                Код: {familyCode}
               </div>
             </>
           ) : (
-            <></>
+            <>
+              <input
+                type="code"
+                placeholder="Код"
+                value={familyCode}
+                onChange={(e) => setFamilyCode(e.target.value)}
+                className="m-1 p-1 rounded-md border border-gray-300 placeholder:text-center"
+              />
+              <button className="bg-white text-center hover:bg-gray-100 px-4 py-2 cursor-pointer" onClick={handleFamilyLink}>
+                Привязать 
+              </button>
+            </>
           )}
         </div>
       </div>
