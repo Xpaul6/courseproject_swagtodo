@@ -68,7 +68,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<FamilyCode>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Iыd)
+            entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn();
 	
             entity.HasOne(fc => fc.Parent)
