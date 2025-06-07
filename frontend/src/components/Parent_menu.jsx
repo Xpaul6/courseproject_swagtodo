@@ -15,6 +15,7 @@ function Parent_menu() {
   const data = useContext(DataContext)
 
   const [familyCode, setFamilyCode] = useState("")
+  const [lists, setLists] = useState(data.lists)
 
   function CreateNewTask() {
     // TODO: 
@@ -27,7 +28,12 @@ function Parent_menu() {
   }
 
   function fetchListsData() {
-
+    axios.get(`/api/tasklists/parent/${data.user.id}`, data.headers)
+      .then(res => {
+        data.lists = res.data
+        setLists(res.data)
+      })
+      .catch(err => alert(err.response.data))
   }
 
   function fetchTasksData() {
@@ -51,6 +57,7 @@ function Parent_menu() {
     data.user.id = localStorage.getItem('id')
     data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
     fetchFamilyCode()
+    fetchListsData()
   }, [])
 
   return (
@@ -66,16 +73,15 @@ function Parent_menu() {
               className="flex flex-row sm:flex-col justify-evenly border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
             >
-              <div className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 1
-              </div>
-              <div className="mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 2
-              </div>
-              <div className="mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 3
-              </div>
-              <div className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
+              {lists.map((list) => 
+                <div
+                  key={list.id}
+                  className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer"
+                >
+                  {list.title}
+                </div>
+              )}
+              <div key="addbtn" className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
                 +
               </div>
             </div>
@@ -99,8 +105,10 @@ function Parent_menu() {
             </button>
           </div>
           {/* Stats block */}
-          <div className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md
-            sm:ml-15 sm:mr-6 overflow-x-scroll">
+          <div
+            className="relative mt-10 sm:mt-0 flex flex-col p-2 pt-0 sm:w-2/6 border-2 border-indigo-400 rounded-md
+            sm:ml-15 sm:mr-6 overflow-x-scroll"
+          >
             <h3 className="sticky text-center mb-2 pt-2 pb-2 border-b-1 border-indigo-200">
               Статистика
             </h3>
@@ -118,7 +126,7 @@ function Parent_menu() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default Parent_menu

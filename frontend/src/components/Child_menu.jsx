@@ -8,10 +8,17 @@ import Profile from './blocks/Profile'
 
 function Child_menu() {
   const data = useContext(DataContext)
+
   const [familyCode, setFamilyCode] = useState('')
+  const [lists, setLists] = useState(data.lists)
 
   function fetchListsData() {
-
+    axios.get(`/api/tasklists/child/${data.user.id}`, data.headers)
+      .then(res => {
+        data.lists = res.data
+        setLists(res.data)
+      })
+      .catch(err => alert(err.response.data))
   }
 
   function fetchTasksData() {
@@ -33,6 +40,7 @@ function Child_menu() {
   useEffect(() => {
     data.user.id = localStorage.getItem('id')
     data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
+    fetchListsData()
   }, [])
 
   return (
@@ -48,16 +56,15 @@ function Child_menu() {
               className="flex flex-row sm:flex-col justify-evenly border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
             >
-              <div className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 1
-              </div>
-              <div className="mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 2
-              </div>
-              <div className="mx-1.5 text-center leading-8 sm:hover:cursor-pointer">
-                Список 3
-              </div>
-              <div className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
+              {lists.map((list) => 
+                <div
+                  key={list.id}
+                  className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer"
+                >
+                  { list.title }
+                </div>
+              )}
+              <div key="addbtn" className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
                 +
               </div>
             </div>
