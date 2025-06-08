@@ -43,6 +43,24 @@ function Parent_menu() {
     })
   }
 
+  function handleTaskApprove(taskId) {
+    axios.post(`/api/tasks/${taskId}/approve`, {}, data.headers)
+      .then(res => {
+        alert('Выполнение подтверждено')
+        fetchTasksData()
+      })
+      .catch(err => alert(err.response.data))
+  }
+
+  function handleTaskReject(taskId) {
+    axios.post(`/api/tasks/${taskId}/reject`, {}, data.headers)
+      .then(res => {
+        alert('Выполнение отклонено')
+        fetchTasksData()
+      })
+      .catch(err => alert(err.response.data))
+  }
+
   function selectList(searchId) {
     lists.forEach(list => {
       if (list.listId == searchId) {
@@ -143,6 +161,7 @@ function Parent_menu() {
             </h3>
             {tasks
               .filter((task) => task.taskListId == currentList.listId)
+              .filter((task) => task.status != 'completed')
               .map((task) => (
                 <Parent_task
                   key={task.taskId}
@@ -151,6 +170,8 @@ function Parent_menu() {
                   status={task.status}
                   handleTaskDelete={handleTaskDelete}
                   handleTaskEdit={handleTaskEdit}
+                  handleTaskApprove={handleTaskApprove}
+                  handleTaskReject={handleTaskReject}
                 />
               ))}
             {currentList.listId != 0 ? (

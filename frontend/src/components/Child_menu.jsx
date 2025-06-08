@@ -114,6 +114,7 @@ function Child_menu() {
             </h3>
             {tasks
               .filter((task) => task.taskListId == currentList.listId)
+              .filter((task) => task.status != 'completed')
               .map((task) => (
                 <Child_task
                   key={task.taskId}
