@@ -11,18 +11,48 @@ function Child_menu() {
 
   const [familyCode, setFamilyCode] = useState('')
   const [lists, setLists] = useState(data.lists)
+  const [tasks, setTasks] = useState(data.tasks)
+  const [currentList, setCurrentList] = useState(data.currentList)
+
+  function selectList(searchId) {
+    lists.forEach(list => {
+      if (list.listId == searchId) {
+        setCurrentList(list)
+        data.currentList.listId = list.listId
+        data.currentList.title = list.title
+      }
+    })
+  }
+
+  function handleComplete(taskId) {
+    axios.post(`/api/tasks/${taskId}/complete`, {}, data.headers)
+      .then(res => {
+        alert('Задание отмечено как выполненное')
+        fetchTasksData()
+      })
+      .catch(err => alert(err.response.data))
+  }
 
   function fetchListsData() {
     axios.get(`/api/tasklists/child/${data.user.id}`, data.headers)
       .then(res => {
         data.lists = res.data
         setLists(res.data)
+        if (res.data.length != 0) {
+          setCurrentList(res.data[0])
+        }
       })
       .catch(err => alert(err.response.data))
   }
 
   function fetchTasksData() {
-
+    axios.get(`/api/tasks/child/${data.user.id}`, data.headers)
+      .then(res => {
+        data.tasks = res.data
+        setTasks(res.data)
+        console.log(res.data) //debug
+      })
+      .catch(err => alert(err.response.data))
   }
 
   function handleFamilyLink() {
@@ -41,11 +71,17 @@ function Child_menu() {
     data.user.id = localStorage.getItem('id')
     data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
     fetchListsData()
+    fetchTasksData()
   }, [])
 
   return (
     <>
-      <Profile type="child" familyCode={familyCode} setFamilyCode={setFamilyCode} handleFamilyLink={handleFamilyLink}/>
+      <Profile
+        type="child"
+        familyCode={familyCode}
+        setFamilyCode={setFamilyCode}
+        handleFamilyLink={handleFamilyLink}
+      />
       <div className="p-5 w-full">
         <h2 className="text-center mt-6 sm:mt-0">Меню ребенка</h2>
         {/* Main block */}
@@ -56,32 +92,38 @@ function Child_menu() {
               className="flex flex-row sm:flex-col justify-evenly border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
             >
-              {lists.map((list) => 
+              {lists.map((list) => (
                 <div
-                  key={list.id}
-                  className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer"
+                  key={list.listId}
+                  className={`${
+                    currentList.listId == list.listId
+                      ? "underline text-blue-600"
+                      : ""
+                  } mx-1.5 text-center leading-8 sm:hover:cursor-pointer`}
+                  onClick={() => selectList(list.listId)}
                 >
-                  { list.title }
+                  {list.title}
                 </div>
-              )}
-              <div key="addbtn" className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
-                +
-              </div>
+              ))}
             </div>
           </div>
           {/* Current list block */}
           <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
-              Список 1
+              {currentList.title}
             </h3>
-            <Child_task />
-            <Child_task />
-            <Child_task />
-            <Child_task />
-            {/* <button className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
-              rounded-xl bg-green-500 sm:cursor-pointer">
-              +
-            </button> */}
+            {tasks
+              .filter((task) => task.taskListId == currentList.listId)
+              .map((task) => (
+                <Child_task
+                  key={task.taskId}
+                  description={task.description}
+                  id={task.taskId}
+                  status={task.status}
+                  reward={task.reward}
+                  handleComplete={handleComplete}
+                />
+              ))}
           </div>
         </div>
       </div>

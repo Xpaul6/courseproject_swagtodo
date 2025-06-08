@@ -17,7 +17,7 @@ function Task_form({type}) {
     const newTaskInfo = {
       parentId: Number(data.user.id),
       childId: Number(childId),
-      taskListId: data.currentList.id,
+      taskListId: data.currentList.listId,
       description: description,
       deadline: (new Date(deadline)).toISOString(),
       reward: reward,
@@ -37,7 +37,7 @@ function Task_form({type}) {
       taskId: data.currentTask.taskId,
       parentId: Number(data.user.id),
       childId: Number(childId),
-      taskListId: data.currentTask.taskListId,
+      taskListId: Number(data.currentTask.taskListId),
       description: description,
       deadline: (new Date(deadline)).toISOString(),
       reward: reward,
