@@ -33,6 +33,16 @@ function Parent_menu() {
       .catch(err => err.response.data)
   }
 
+  function handleTaskEdit(taskId) {
+    data.tasks.forEach(task => {
+      if (task.taskId == taskId) {
+        data.currentTask = task
+        console.log(data.currentTask)
+        navigate("/edit-task")
+      }
+    })
+  }
+
   function selectList(searchId) {
     lists.forEach(list => {
       if (list.listId == searchId) {
@@ -48,6 +58,9 @@ function Parent_menu() {
       .then(res => {
         data.lists = res.data
         setLists(res.data)
+        if (res.data.length != 0) {
+          setCurrentList(res.data[0])
+        }
       })
       .catch(err => alert(err.response.data))
   }
@@ -137,6 +150,7 @@ function Parent_menu() {
                   id={task.taskId}
                   status={task.status}
                   handleTaskDelete={handleTaskDelete}
+                  handleTaskEdit={handleTaskEdit}
                 />
               ))}
             {currentList.listId != 0 ? (
@@ -166,7 +180,7 @@ function Parent_menu() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default Parent_menu

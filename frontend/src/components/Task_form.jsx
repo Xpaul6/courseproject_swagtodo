@@ -4,14 +4,14 @@ import axios from 'axios'
 
 import { DataContext } from '../context/DataContext'
 
-function New_task() {
+function Task_form({type}) {
   const data = useContext(DataContext)
   const navigate = useNavigate()
 
-  const [description, setDescription] = useState("")
-  const [childId, setChildId] = useState(0)
-  const [reward, setReward] = useState("")
-  const [deadline, setDeadline] = useState(new Date)
+  const [description, setDescription] = useState(type == 'new' ? "" : data.currentTask.description)
+  const [childId, setChildId] = useState(type == 'new' ? 0 : data.currentTask.childId)
+  const [reward, setReward] = useState(type == 'new' ? "" : data.currentTask.reward)
+  const [deadline, setDeadline] = useState(type == 'new' ? new Date : new Date(data.currentTask.deadline))
 
   function handleTaskAdd() {
     const newTaskInfo = {
@@ -32,6 +32,27 @@ function New_task() {
       .catch(err => err.response.data)
   }
 
+  function handleTaskEdit() {
+    const newTaskInfo = {
+      taskId: data.currentTask.taskId,
+      parentId: Number(data.user.id),
+      childId: Number(childId),
+      taskListId: data.currentTask.taskListId,
+      description: description,
+      deadline: (new Date(deadline)).toISOString(),
+      reward: reward,
+      status: "ongoing",
+      createdAt: data.currentTask.createdAt
+    }
+
+    axios.put(`/api/tasks/${data.currentTask.taskId}`, newTaskInfo, data.headers)
+      .then(res => {
+        alert('Успешное изменение')
+        navigate('/parent-menu')
+      })
+      .catch(err => err.response.data)
+  }
+
   useEffect(() => {
     console.log(data) // debug
     if (data.currentList.id == 0) {
@@ -42,7 +63,7 @@ function New_task() {
   return (
     <>
       <div className="p-5 w-full">
-        <h2 className="text-center">Новая задача</h2>
+        <h2 className="text-center">{type == 'new' ? "Новая задача" : "Изменить задачу"}</h2>
         {/* Main block */}
         <div className="flex sm:flex-row sm:justify-around flex-col mt-10 sm:h-[500px]">
           <div
@@ -93,10 +114,10 @@ function New_task() {
                 hover:cursor-pointer sm:hover:text-white"
                 onClick={(e) => {
                   e.preventDefault()
-                  handleTaskAdd()
+                  type == 'new' ? handleTaskAdd() : handleTaskEdit()
                 }}
               >
-                Создать
+                {type == 'new' ? "Создать" : "Изменить"}
               </button>
             </form>
           </div>
@@ -106,4 +127,4 @@ function New_task() {
   )
 }
 
-export default New_task
+export default Task_form

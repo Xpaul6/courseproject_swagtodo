@@ -18,14 +18,14 @@ const defaultData = {
     createdAt: "undefined"
   },
   currentTask: {
-    id: 0,
-    parentid: 0,
-    childid: 0,
+    taskId: 0,
+    parentId: 0,
+    childId: 0,
     description: "undefined",
     deadline: "undefined",
     reward: "undefined",
     status: "undefined",
-    createdate: "undefined"
+    createdAt: "undefined"
   },
   currentList: {
     listId: 0,
@@ -52,7 +52,7 @@ function isTokenExpired(token) {
     localStorage.setItem('token', '')
     return true
   }
-};
+}
 
 async function AuthCheck() {
   const token = localStorage.getItem('token')

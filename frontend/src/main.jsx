@@ -14,7 +14,7 @@ import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
 import Parent_menu from './components/Parent_menu.jsx'
 import Child_menu from './components/Child_menu.jsx'
-import New_task from './components/New_task.jsx'
+import Task_form from './components/Task_form.jsx'
 import Add_child from './components/Add_child.jsx'
 
 import DataContextProvider from './context/DataContext.jsx'
@@ -62,7 +62,15 @@ const router = createBrowserRouter([
     path: '/new-task',
     element: (
       <PrivateRoute>
-        <New_task />
+        <Task_form type="new" />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: '/edit-task',
+    element: (
+      <PrivateRoute>
+        <Task_form type="edit" />
       </PrivateRoute>
     )
   },
