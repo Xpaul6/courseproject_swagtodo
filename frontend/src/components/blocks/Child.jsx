@@ -1,8 +1,8 @@
-function Child() {
+function Child({name}) {
   return (
     <>
       <div className="flex justify-evenly my-2">
-        <div className="">Имя Фамилия</div>
+        <div className="">{name}</div>
         <div>2/10</div>
       </div>
     </>

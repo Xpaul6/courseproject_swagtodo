@@ -16,15 +16,11 @@ function Parent_menu() {
 
   const [familyCode, setFamilyCode] = useState("")
   const [lists, setLists] = useState(data.lists)
+  const [children, setChildren] = useState(data.children)
 
   function CreateNewTask() {
     // TODO: 
     navigate('/new-task')
-  }
-
-  function AddChild() {
-    // TODO:
-    navigate('/add-child')
   }
 
   function fetchListsData() {
@@ -41,7 +37,12 @@ function Parent_menu() {
   }
 
   function fetchChildrenData() {
-
+    axios.get(`/api/children/${data.user.id}`, data.headers)
+      .then(res => {
+        data.children = res.data
+        setChildren(res.data)
+      })
+      .catch(err => alert(err.response.data))
   }
 
   function fetchFamilyCode() {
@@ -58,11 +59,12 @@ function Parent_menu() {
     data.headers.headers.Authorization = "Bearer " + localStorage.getItem('token')
     fetchFamilyCode()
     fetchListsData()
+    fetchChildrenData()
   }, [])
 
   return (
     <>
-      <Profile type="parent" familyCode={familyCode}/>
+      <Profile type="parent" familyCode={familyCode} />
       <div className="p-5 w-full">
         <h2 className="text-center mt-6 sm:mt-0">Меню родителя</h2>
         {/* Main block */}
@@ -73,15 +75,18 @@ function Parent_menu() {
               className="flex flex-row sm:flex-col justify-evenly border-b-2 pb-1 sm:pb-0 sm:border-2 sm:h-full
               border-gray-300 sm:rounded-md"
             >
-              {lists.map((list) => 
+              {lists.map((list) => (
                 <div
                   key={list.id}
                   className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer"
                 >
                   {list.title}
                 </div>
-              )}
-              <div key="addbtn" className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer">
+              ))}
+              <div
+                key="addbtn"
+                className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer"
+              >
                 +
               </div>
             </div>
@@ -112,16 +117,9 @@ function Parent_menu() {
             <h3 className="sticky text-center mb-2 pt-2 pb-2 border-b-1 border-indigo-200">
               Статистика
             </h3>
-            <Child />
-            <Child />
-            <Child />
-            {/* <button
-              className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
-              rounded-xl bg-green-500 sm:cursor-pointer"
-              onClick={AddChild}
-            >
-              +
-            </button> */}
+            {children.map((child) => (
+              <Child name={child.name} key={child.id} />
+            ))}
           </div>
         </div>
       </div>
