@@ -28,7 +28,7 @@ const defaultData = {
     createdate: "undefined"
   },
   currentList: {
-    id: 0,
+    listId: 0,
     parent_id: 0,
     child_id: 0,
     title: "Выберите список",

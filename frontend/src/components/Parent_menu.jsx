@@ -14,14 +14,13 @@ function Parent_menu() {
   const navigate = useNavigate()
   const data = useContext(DataContext)
 
-  const [familyCode, setFamilyCode] = useState("")
+  const [familyCode, setFamilyCode] = useState(data.familycode)
   const [lists, setLists] = useState(data.lists)
   const [currentList, setCurrentList] = useState(data.currentList)
   const [children, setChildren] = useState(data.children)
   const [tasks, setTasks] = useState(data.tasks)
 
   function CreateNewTask() {
-    // TODO: 
     navigate('/new-task')
   }
 
@@ -38,7 +37,7 @@ function Parent_menu() {
     lists.forEach(list => {
       if (list.listId == searchId) {
         setCurrentList(list)
-        data.currentList.id = list.listId
+        data.currentList.listId = list.listId
         data.currentList.title = list.title
       }
     })
@@ -140,7 +139,7 @@ function Parent_menu() {
                   handleTaskDelete={handleTaskDelete}
                 />
               ))}
-            {currentList.id != 0 ? (
+            {currentList.listId != 0 ? (
               <button
                 className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
