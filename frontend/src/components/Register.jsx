@@ -1,6 +1,34 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import axios from 'axios'
+
 import '../styles/main.css'
 
 function Register() {
+  const navigate = useNavigate()
+  const [accountType, SetAccountType] = useState("")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+
+  function handleRegister() {
+    const userInfo = {
+      name: name,
+      email: email,
+      password: password,
+      isParent: accountType == 'parent' ? true : false
+    }
+    
+    axios.post('/api/register', userInfo)
+      .then(res => {
+        console.log("register success")
+        localStorage.setItem('role', accountType)
+        navigate('/login')
+      })
+      .catch(err => alert(err.response.data))
+  }
+
   return (
     <>
       <div className="pagebox">
@@ -9,15 +37,19 @@ function Register() {
           <input
             type="text"
             placeholder="Имя"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className="p-1 rounded-md border border-gray-300 placeholder:text-center"
           />
           <input
             type="email"
             placeholder="Эл. почта"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="mt-5 p-1 rounded-md border border-gray-300 placeholder:text-center"
           />
           <div className="mt-5">
-            <input type="radio" id="parent" name="role" value="parent" />
+            <input type="radio" id="parent" name="role" value="parent" onChangeCapture={(e) => SetAccountType(e.target.value)} />
             <label htmlFor="parent" className="ml-2">
               Родитель
             </label>
@@ -29,8 +61,10 @@ function Register() {
             </label>
           </div>
           <input
-            type="passsword"
+            type="password"
             placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="mt-5 p-1 rounded-md border border-gray-300 placeholder:text-center"
           />
           <button
@@ -38,7 +72,8 @@ function Register() {
               sm:border-green-500 transition-all ease-in-out transition-15 sm:hover:bg-green-500
                 hover:cursor-pointer sm:hover:text-white"
             onClick={(e) => {
-              e.preventDefault();
+              e.preventDefault()
+              handleRegister()
             }}
           >
             Зарегистрироваться
@@ -46,7 +81,7 @@ function Register() {
         </form>
       </div>
     </>
-  );
+  )
 }
 
-export default Register;
+export default Register
