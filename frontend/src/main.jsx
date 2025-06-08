@@ -16,6 +16,7 @@ import Parent_menu from './components/Parent_menu.jsx'
 import Child_menu from './components/Child_menu.jsx'
 import Task_form from './components/Task_form.jsx'
 import Add_child from './components/Add_child.jsx'
+import List_form from './components/List_form.jsx'
 
 import DataContextProvider from './context/DataContext.jsx'
 import { PrivateRoute } from './components/PrivateRoute.jsx'
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <Add_child />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: '/new-list',
+    element: (
+      <PrivateRoute>
+        <List_form />
       </PrivateRoute>
     )
   }

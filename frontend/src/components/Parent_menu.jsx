@@ -20,7 +20,11 @@ function Parent_menu() {
   const [children, setChildren] = useState(data.children)
   const [tasks, setTasks] = useState(data.tasks)
 
-  function CreateNewTask() {
+  function createNewList() {
+    navigate('/new-list')
+  }
+
+  function createNewTask() {
     navigate('/new-task')
   }
 
@@ -149,6 +153,7 @@ function Parent_menu() {
               <div
                 key="addbtn"
                 className="text-green-800 rounded-xl border-2 border-green-500 text-center py-1 px-3 mx-1.5 sm:hover:cursor-pointer"
+                onClick={createNewList}
               >
                 +
               </div>
@@ -178,7 +183,7 @@ function Parent_menu() {
               <button
                 className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
-                onClick={CreateNewTask}
+                onClick={createNewTask}
               >
                 +
               </button>
