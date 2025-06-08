@@ -173,15 +173,8 @@ function Parent_menu() {
           </div>
           {/* Current list block (tasks) */}
           <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
-            <button
-              className="absolute top-1.5 right-4.5 z-10 py-1 px-2 text-red-500 cursor-pointer rounded-md border-2 border-transparent
-                sm:hover:border-red-500 transition-all ease-in-out"
-              onClick={handleListDelete}
-            >
-              X
-            </button>
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
-              {currentList.title}
+              {currentList ? currentList.title : "Cоздайте список"}
             </h3>
             {tasks
               .filter((task) => task.taskListId == currentList.listId)
@@ -198,14 +191,23 @@ function Parent_menu() {
                   handleTaskReject={handleTaskReject}
                 />
               ))}
-            {currentList.listId != 0 ? (
-              <button
-                className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
-              rounded-xl bg-green-500 sm:cursor-pointer"
-                onClick={createNewTask}
-              >
-                +
-              </button>
+            {currentList && currentList.listId != 0 ? (
+              <>
+                <button
+                  className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+                rounded-xl bg-green-500 sm:cursor-pointer"
+                  onClick={createNewTask}
+                >
+                  +
+                </button>
+                <button
+                  className="absolute top-1.5 right-4.5 z-10 py-1 px-2 text-red-500 cursor-pointer rounded-md border-2 border-transparent
+                    sm:hover:border-red-500 transition-all ease-in-out"
+                  onClick={handleListDelete}
+                >
+              X
+            </button>
+              </>
             ) : (
               <></>
             )}
