@@ -24,10 +24,7 @@ function App() {
             Регистрация
           </Link>
           <Link to="/login" className="link">
-            Войти как родитель
-          </Link>
-          <Link to="/login" className="link">
-            Войти как ребенок
+            Войти
           </Link>
         </div>
       </div>
