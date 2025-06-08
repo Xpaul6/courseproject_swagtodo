@@ -1,5 +1,6 @@
-namespace backend.DTOs;
+using System.ComponentModel;
 
+namespace backend.DTOs;
 public record TaskCreateRequest(
     int ParentId,
     int ChildId,
@@ -7,4 +8,6 @@ public record TaskCreateRequest(
     string Description,
     DateTime? Deadline,
     string? Reward,
-    string? Status);
+    [DefaultValue("ongoing")]
+    string Status = "ongoing"
+);

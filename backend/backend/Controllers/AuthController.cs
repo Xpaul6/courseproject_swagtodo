@@ -11,6 +11,7 @@ namespace backend.Controllers;
 
 [ApiController]
 [Route("/")]
+[Tags("Authentication")]
 public class AuthController : ControllerBase
 {
     private readonly AppDbContext _db;

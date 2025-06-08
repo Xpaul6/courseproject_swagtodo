@@ -40,7 +40,9 @@ public class TaskController : ControllerBase
             Description = request.Description,
             Deadline = request.Deadline,
             Reward = request.Reward,
-            Status = request.Status ?? "ongoing",
+            Status = (request.Status == "pending" || request.Status == "completed") 
+                ? request.Status 
+                : "ongoing",
             CreatedAt = DateTime.UtcNow.Date
         };
 
@@ -123,6 +125,17 @@ public class TaskController : ControllerBase
             .ToListAsync();
         return Results.Ok(tasks);
     }
+
+    [HttpGet("tasks/parent/{parentId}/notcompleted")]
+    [Authorize(Roles = "parent")]
+    public async Task<IResult> GetNotcompletedTasks(int parentId)
+    {
+        var tasks = await _db.Tasks
+            .Where(t => t.ParentId == parentId && t.Status == "ongoing")
+            .ToListAsync();
+        return Results.Ok(tasks);
+    }
+
 
     [HttpGet("tasks/child/{childId}")]
     [Authorize(Roles = "child")]
