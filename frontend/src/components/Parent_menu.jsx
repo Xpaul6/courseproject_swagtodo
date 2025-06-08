@@ -25,11 +25,21 @@ function Parent_menu() {
     navigate('/new-task')
   }
 
+  function handleTaskDelete(taskId) {
+    axios.delete(`/api/tasks/${taskId}`, data.headers)
+      .then(_ => {
+        alert("Удалено успешно")
+        fetchTasksData()
+      })
+      .catch(err => err.response.data)
+  }
+
   function selectList(searchId) {
     lists.forEach(list => {
       if (list.listId == searchId) {
         setCurrentList(list)
         data.currentList.id = list.listId
+        data.currentList.title = list.title
       }
     })
   }
@@ -127,6 +137,7 @@ function Parent_menu() {
                   description={task.description}
                   id={task.taskId}
                   status={task.status}
+                  handleTaskDelete={handleTaskDelete}
                 />
               ))}
             {currentList.id != 0 ? (

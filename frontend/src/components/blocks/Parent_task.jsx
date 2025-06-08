@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function Parent_task({description, id, status}) {
+function Parent_task({description, id, status, handleTaskDelete}) {
   const [isOpen, SetIsOpen] = useState(false)
 
   return (
@@ -25,7 +25,7 @@ function Parent_task({description, id, status}) {
         <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
           Редактировать
         </button>
-        <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
+        <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer" onClick={() => handleTaskDelete(id)}>
           Удалить
         </button>
         <button className="bg-white hover:bg-gray-100 px-4 py-2 text-left cursor-pointer">
