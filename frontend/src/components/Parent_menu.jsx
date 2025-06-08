@@ -16,11 +16,22 @@ function Parent_menu() {
 
   const [familyCode, setFamilyCode] = useState("")
   const [lists, setLists] = useState(data.lists)
+  const [currentList, setCurrentList] = useState(data.currentList)
   const [children, setChildren] = useState(data.children)
+  const [tasks, setTasks] = useState(data.tasks)
 
   function CreateNewTask() {
     // TODO: 
     navigate('/new-task')
+  }
+
+  function selectList(searchId) {
+    lists.forEach(list => {
+      if (list.listId == searchId) {
+        setCurrentList(list)
+        data.currentList.id = list.listId
+      }
+    })
   }
 
   function fetchListsData() {
@@ -33,7 +44,13 @@ function Parent_menu() {
   }
 
   function fetchTasksData() {
-
+    axios.get(`/api/tasks/parent/${data.user.id}`, data.headers)
+      .then(res => {
+        data.tasks = res.data
+        setTasks(res.data)
+        console.log(res.data) //debug
+      })
+      .catch(err => alert(err.response.data))
   }
 
   function fetchChildrenData() {
@@ -60,6 +77,7 @@ function Parent_menu() {
     fetchFamilyCode()
     fetchListsData()
     fetchChildrenData()
+    fetchTasksData()
   }, [])
 
   return (
@@ -77,8 +95,13 @@ function Parent_menu() {
             >
               {lists.map((list) => (
                 <div
-                  key={list.id}
-                  className="underline text-blue-600 mx-1.5 text-center leading-8 sm:hover:cursor-pointer"
+                  key={list.listId}
+                  className={`${
+                    currentList.listId == list.listId
+                      ? "underline text-blue-600"
+                      : ""
+                  } mx-1.5 text-center leading-8 sm:hover:cursor-pointer`}
+                  onClick={() => selectList(list.listId)}
                 >
                   {list.title}
                 </div>
@@ -91,16 +114,21 @@ function Parent_menu() {
               </div>
             </div>
           </div>
-          {/* Current list block */}
+          {/* Current list block (tasks) */}
           <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
-              Список 1
+              {currentList.title}
             </h3>
-            <Parent_task />
-            <Parent_task />
-            <Parent_task />
-            <Parent_task />
-            <Parent_task />
+            {tasks
+              .filter((task) => task.taskListId == currentList.listId)
+              .map((task) => (
+                <Parent_task
+                  key={task.taskId}
+                  description={task.description}
+                  id={task.taskId}
+                  status={task.status}
+                />
+              ))}
             <button
               className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
@@ -118,7 +146,7 @@ function Parent_menu() {
               Статистика
             </h3>
             {children.map((child) => (
-              <Child name={child.name} key={child.id} />
+              <Child name={child.name} key={child.userId} />
             ))}
           </div>
         </div>

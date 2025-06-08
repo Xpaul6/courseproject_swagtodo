@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-function Parent_task() {
+function Parent_task({description, id, status}) {
   const [isOpen, SetIsOpen] = useState(false)
 
   return (
     <div className="flex justify-around items-center my-2 relative">
       <div className={`w-fit mx-10 ${isOpen ? "underline" : ""}`}>
-        Task description
+        {description}
       </div>
       <button
         className={`absolute right-3 p-2 cursor-pointer ${
@@ -33,7 +33,7 @@ function Parent_task() {
         </button>
       </div>
     </div>
-  );
+  )
 }
 
 export default Parent_task

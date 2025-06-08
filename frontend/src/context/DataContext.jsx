@@ -31,7 +31,7 @@ const defaultData = {
     id: 0,
     parent_id: 0,
     child_id: 0,
-    title: "undefined",
+    title: "Выберите список",
     createdate: "undefined"
   },
   familycode: "undefined",
