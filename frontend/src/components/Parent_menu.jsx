@@ -28,6 +28,15 @@ function Parent_menu() {
     navigate('/new-task')
   }
 
+  function handleListDelete() {
+    axios.delete(`/api/tasklists/${currentList.listId}`, data.headers)
+      .then(_ => {
+        alert('Список удален')
+        fetchListsData()
+      })
+      .catch(err => alert(err.response.data))
+  }
+
   function handleTaskDelete(taskId) {
     axios.delete(`/api/tasks/${taskId}`, data.headers)
       .then(_ => {
@@ -80,7 +89,10 @@ function Parent_menu() {
       .then(res => {
         data.lists = res.data
         setLists(res.data)
-        if (res.data.length != 0) {
+        if (data.currentList.listId == 0) {
+          setCurrentList(res.data[0])
+        }
+        if (!res.data.includes(currentList)) {
           setCurrentList(res.data[0])
         }
       })
@@ -161,12 +173,19 @@ function Parent_menu() {
           </div>
           {/* Current list block (tasks) */}
           <div className="relative mt-10 sm:mt-0 flex flex-col sm:ml-15 p-2 pt-0 sm:w-2/5 border-2 border-blue-400 rounded-md overflow-x-scroll">
+            <button
+              className="absolute top-1.5 right-4.5 z-10 py-1 px-2 text-red-500 cursor-pointer rounded-md border-2 border-transparent
+                sm:hover:border-red-500 transition-all ease-in-out"
+              onClick={handleListDelete}
+            >
+              X
+            </button>
             <h3 className="sticky top-0 text-center py-2 pb-2 border-b-1 border-blue-200 bg-white">
               {currentList.title}
             </h3>
             {tasks
               .filter((task) => task.taskListId == currentList.listId)
-              .filter((task) => task.status != 'completed')
+              .filter((task) => task.status != "completed")
               .map((task) => (
                 <Parent_task
                   key={task.taskId}
