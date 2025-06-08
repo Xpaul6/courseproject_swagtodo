@@ -87,12 +87,16 @@ namespace backend.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
                         .HasColumnName("code");
 
                     b.Property<int>("ParentId")
                         .HasColumnType("integer")
-                        .HasColumnName("parent_id");
+                        .HasColumnName("parent_user_id");
+
+                    b.Property<int?>("ParentUserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -100,6 +104,8 @@ namespace backend.Migrations
                         .IsUnique();
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("familycodes");
                 });
@@ -214,11 +220,15 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.FamilyCode", b =>
                 {
-                    b.HasOne("backend.Models.User", "Parent")
+                    b.HasOne("backend.Models.User", null)
                         .WithMany("FamilyCodes")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentUserId");
 
                     b.Navigation("Parent");
                 });

@@ -22,11 +22,44 @@ namespace backend.Migrations
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
                     role = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    parent_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_users", x => x.userid);
+                    table.ForeignKey(
+                        name: "FK_users_users_parent_id",
+                        column: x => x.parent_id,
+                        principalTable: "users",
+                        principalColumn: "userid");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "familycodes",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityAlwaysColumn),
+                    code = table.Column<string>(type: "text", nullable: false),
+                    parent_id = table.Column<int>(type: "integer", nullable: false),
+                    ParentUserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_familycodes", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_familycodes_users_ParentUserId",
+                        column: x => x.ParentUserId,
+                        principalTable: "users",
+                        principalColumn: "userid",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_familycodes_users_parent_id",
+                        column: x => x.parent_id,
+                        principalTable: "users",
+                        principalColumn: "userid",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,6 +129,22 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_familycodes_code",
+                table: "familycodes",
+                column: "code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_familycodes_parent_id",
+                table: "familycodes",
+                column: "parent_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_familycodes_ParentUserId",
+                table: "familycodes",
+                column: "ParentUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_task_lists_child_id",
                 table: "task_lists",
                 column: "child_id");
@@ -125,11 +174,19 @@ namespace backend.Migrations
                 table: "users",
                 column: "email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_parent_id",
+                table: "users",
+                column: "parent_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "familycodes");
+
             migrationBuilder.DropTable(
                 name: "tasks");
 

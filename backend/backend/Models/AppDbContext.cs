@@ -68,10 +68,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<FamilyCode>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Iыd)
+            entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn();
-	
-            entity.HasOne(fc => fc.Parent)
+
+            entity.HasOne<User>()
                 .WithMany(u => u.FamilyCodes)
                 .HasForeignKey(fc => fc.ParentId)
                 .HasPrincipalKey(u => u.UserId)

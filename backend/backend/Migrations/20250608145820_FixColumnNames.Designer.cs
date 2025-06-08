@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250607052448_RecreateFamilyCodeTable")]
-    partial class RecreateFamilyCodeTable
+    [Migration("20250608145820_FixColumnNames")]
+    partial class FixColumnNames
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,12 +90,16 @@ namespace backend.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)")
                         .HasColumnName("code");
 
                     b.Property<int>("ParentId")
                         .HasColumnType("integer")
-                        .HasColumnName("parent_id");
+                        .HasColumnName("parent_user_id");
+
+                    b.Property<int?>("ParentUserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -103,6 +107,8 @@ namespace backend.Migrations
                         .IsUnique();
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("ParentUserId");
 
                     b.ToTable("familycodes");
                 });
@@ -217,11 +223,15 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.FamilyCode", b =>
                 {
-                    b.HasOne("backend.Models.User", "Parent")
+                    b.HasOne("backend.Models.User", null)
                         .WithMany("FamilyCodes")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentUserId");
 
                     b.Navigation("Parent");
                 });

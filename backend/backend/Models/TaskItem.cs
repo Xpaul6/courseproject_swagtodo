@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel;
 [Table("tasks")]
 public class TaskItem
 {
@@ -32,6 +32,7 @@ public class TaskItem
 
     [Column("status")]
     [Required]
+    [DefaultValue("ongoing")]
     public string Status { get; set; } = "ongoing";
 
     [Column("created_at")]
