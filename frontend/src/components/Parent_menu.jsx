@@ -129,13 +129,17 @@ function Parent_menu() {
                   status={task.status}
                 />
               ))}
-            <button
-              className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
+            {currentList.id != 0 ? (
+              <button
+                className="sticky bottom-1 right-1 ml-auto mt-auto py-2 px-3.5 w-min text-xl text-white border-2
               rounded-xl bg-green-500 sm:cursor-pointer"
-              onClick={CreateNewTask}
-            >
-              +
-            </button>
+                onClick={CreateNewTask}
+              >
+                +
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
           {/* Stats block */}
           <div
@@ -152,7 +156,7 @@ function Parent_menu() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default Parent_menu
