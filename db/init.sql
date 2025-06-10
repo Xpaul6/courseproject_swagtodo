@@ -28,19 +28,19 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.familycodes (
-    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    code text NOT NULL UNIQUE,
-    parent_id integer NOT NULL REFERENCES users(userid)
+                                    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                    code text NOT NULL UNIQUE,
+                                    parent_id integer NOT NULL REFERENCES users(userid)
 );
-    
+
 CREATE TABLE public.users (
-    userid integer GENERATED ALWAYS AS IDENTITY,
-    name character varying(100) NOT NULL,
-    email character varying(100) NOT NULL,
-    password text NOT NULL,
-    role character varying(10) NOT NULL,
-    created_at date NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (userid)
+                              userid integer GENERATED ALWAYS AS IDENTITY,
+                              name character varying(100) NOT NULL,
+                              email character varying(100) NOT NULL,
+                              password text NOT NULL,
+                              role character varying(10) NOT NULL,
+                              created_at date NOT NULL,
+                              CONSTRAINT users_pkey PRIMARY KEY (userid)
 );
 
 ALTER TABLE public.users ADD COLUMN parent_id integer REFERENCES public.users(userid);
@@ -48,20 +48,20 @@ ALTER TABLE public.users ADD COLUMN parent_id integer REFERENCES public.users(us
 ALTER TABLE public.users OWNER TO postgres;
 
 CREATE TABLE public.tasks (
-    id integer GENERATED ALWAYS AS IDENTITY,
-    parent_id integer NOT NULL,
-    child_id integer NOT NULL,
-    description text NOT NULL,
-    deadline date,
-    reward text,
-    status character varying(20) NOT NULL DEFAULT 'ongoing',
-    created_at date NOT NULL DEFAULT CURRENT_DATE,
-    
-    CONSTRAINT tasks_pkey PRIMARY KEY (id),
-    CONSTRAINT task_parent_fk FOREIGN KEY (parent_id)
-      REFERENCES public.users(userid) ON DELETE RESTRICT,
-    CONSTRAINT task_child_fk FOREIGN KEY (child_id)
-      REFERENCES public.users(userid) ON DELETE RESTRICT
+                              id integer GENERATED ALWAYS AS IDENTITY,
+                              parent_id integer NOT NULL,
+                              child_id integer NOT NULL,
+                              description text NOT NULL,
+                              deadline date,
+                              reward text,
+                              status character varying(20) NOT NULL DEFAULT 'ongoing',
+                              created_at date NOT NULL DEFAULT CURRENT_DATE,
+
+                              CONSTRAINT tasks_pkey PRIMARY KEY (id),
+                              CONSTRAINT task_parent_fk FOREIGN KEY (parent_id)
+                                  REFERENCES public.users(userid) ON DELETE RESTRICT,
+                              CONSTRAINT task_child_fk FOREIGN KEY (child_id)
+                                  REFERENCES public.users(userid) ON DELETE RESTRICT
 );
 
 -- Create indexes for better performance
