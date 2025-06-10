@@ -158,7 +158,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet("tasks/child/{childId}/numberofCompleted")]
-    [Authorize(Roles = "child")]
+    [Authorize(Roles = "parent")]
     public async Task<ActionResult<int>> GetNumberOfCompletedChildTasks(int childId)
     {
         var tasks = await _db.Tasks
