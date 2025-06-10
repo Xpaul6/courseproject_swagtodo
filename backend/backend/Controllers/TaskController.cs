@@ -157,6 +157,16 @@ public class TaskController : ControllerBase
         return Results.Ok(tasks);
     }
 
+    [HttpGet("tasks/child/{childId}/numberofCompleted")]
+    [Authorize(Roles = "child")]
+    public async Task<ActionResult<int>> GetNumberOfCompletedChildTasks(int childId)
+    {
+        var tasks = await _db.Tasks
+            .Where(t => t.ChildId == childId && t.Status == "completed")
+            .ToListAsync();
+        return Ok(tasks.Count);
+    }
+
     [HttpPost("tasks/{id}/complete")]
     [Authorize(Roles = "child")]
     public async Task<IResult> CompleteTask(int id)
@@ -169,4 +179,6 @@ public class TaskController : ControllerBase
         await _db.SaveChangesAsync();
         return Results.Ok(task);
     }
+
+
 }
