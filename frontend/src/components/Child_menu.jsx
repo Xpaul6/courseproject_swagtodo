@@ -50,7 +50,6 @@ function Child_menu() {
       .then(res => {
         data.tasks = res.data
         setTasks(res.data)
-        console.log(res.data) //debug
       })
       .catch(err => alert(err.response.data))
   }
@@ -60,7 +59,7 @@ function Child_menu() {
       code: familyCode,
       childId: localStorage.getItem('id')
     }
-    axios.post('/api/join', info, data.headers)
+    axios.post('/api/family/join', info, data.headers)
       .then(res => {
         alert(res.data)
       })

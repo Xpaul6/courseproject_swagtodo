@@ -104,13 +104,12 @@ function Parent_menu() {
       .then(res => {
         data.tasks = res.data
         setTasks(res.data)
-        console.log(res.data) //debug
       })
       .catch(err => alert(err.response.data))
   }
 
   function fetchChildrenData() {
-    axios.get(`/api/children/${data.user.id}`, data.headers)
+    axios.get(`/api/family/children/${data.user.id}`, data.headers)
       .then(res => {
         data.children = res.data
         setChildren(res.data)
@@ -119,7 +118,7 @@ function Parent_menu() {
   }
 
   function fetchFamilyCode() {
-    axios.get(`/api/familycode/${data.user.id}`, data.headers)
+    axios.get(`/api/family/code/${data.user.id}`, data.headers)
       .then(res => {
         data.familycode = res.data.code
         setFamilyCode(res.data.code)
