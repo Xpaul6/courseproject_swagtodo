@@ -220,7 +220,7 @@ function Parent_menu() {
               Статистика
             </h3>
             {children.map((child) => (
-              <Child name={child.name} key={child.userId} />
+              <Child name={child.name} key={child.userId} id={child.userId} />
             ))}
           </div>
         </div>
